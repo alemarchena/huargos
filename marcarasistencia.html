@@ -1,0 +1,420 @@
+<style>
+  #subtitulo{
+    font-family: 'Charis SIL', serif;
+    color: #534c07;
+}
+#espera{
+    visibility: hidden;
+}
+.divasistencia{
+    margin-top: 1em;
+    
+}
+.opcionesasistencia{
+    margin: 1em 0em 1em 0em;
+}
+#contienealumnos{
+    margin: 1em 0em 1em 0em;
+}
+#refrescar:hover{
+    background-color: #b3a845;
+}
+
+#fechareserva{
+    line-height: 1.3em!important;
+    font-size: 1.2em!important;
+    margin: 0.5em;  
+}
+
+@media (min-device-width: 320px) and (max-device-width: 640px)
+{
+#fechareserva{line-height: 1.5em!important;font-size: 1.5em!important;margin: 0.5em;}
+}
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="modalclave" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Cambio de Clave</h5>
+          <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+              <!-- -------------------- campos clave ------------------- -->
+                  <div class="row" style="margin: 0.5em;">
+                    <div class="col">
+                        <div class="row align-items-center" >
+                            <div class="col-sm-10">
+                                <label for="password">Clave</label>
+                                <input type="password" id="password" placeholder="Escribe tu Contraseña" class="form-control caja" aria-describedby="passwordHelpInline">
+                            </div>
+                            <div class="col-md-1" >
+                                <i class="btn icon fa fa-eye-slash" type="button" id="verclave"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <span id="passwordHelpInline" class="form-text">
+                                    Longitud de 4 a 8 caracteres
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+  
+            <!-- -------------------- campos clave ------------------- -->
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button id="btnguardarclave" type="button" onclick="VerificaIngresoUsuario()" class="btn btn-primary" data-dismiss="modal">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ------------------------------------- Fin Modal ----------------------------------- -->
+<div class="divasistencia" onclick="CambiaColorPantalla('#ffffff')">
+
+<form class="row needs-validation" novalidate onclick="CambiaColorPantalla('#ffffff')"> 
+    <div class="row opcionesasistencia">
+        <div class="col-sm-12 col-md-2" style="text-align: center">
+            <a href="#" id="logoempresa"><img class="logo" src="img/logoempresa.png?n="+version alt="" style="height: 100px;width: auto;"></a>
+        </div>
+        <div class="col-sm-12 col-md-4 offset-md-2" style="text-align: center">
+            <h5>Asistencia</h5>
+            <div class="d-flex justify-content-center">
+                <p>Toca tu usuario para ingresar</p>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button id="refrescar" onclick="ValidarCamposConsulta()" class="btn btn-success"><span class="material-symbols-outlined">refresh</span></button>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4" style="text-align: center">
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-md-6" style="text-align: center;">
+                    <input type="date" id="fechareserva" name="fecha">
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-md-6">
+                    <div id="contienelista"></div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-md-6">
+                    <div id="contieneturno"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="contienealumnos" class="d-flex justify-content-center"></div>
+</form>
+<div id="espera" class="d-flex justify-content-center">
+  <div class="spinner-border text-warning" role="status">
+      <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<div class="d-flex justify-content-center" >
+    <p id="subtitulo"></p>
+</div>
+</div>
+
+<script>
+
+var ldfechareserva;
+var ldaviso;
+var valorturno=0;
+var usuariopideingreso;
+var idreservapresente;
+var tarjetanomape;
+var sonidook = new Audio("sonido/ok.mp3");
+var sonidoerror = new Audio("sonido/error.mp3");
+
+function mostrarPassword(objeto) {
+  var cambio = document.getElementById(objeto);
+  if (cambio.type == "password") {
+      cambio.type = "text";
+      $('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+  } else {
+      cambio.type = "password";
+      $('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+  }
+}
+$("#verclave").click(function () {mostrarPassword("password");});
+
+
+function ListarAlumnos(debemoverse,valorturno)
+{
+    elemento = document.getElementById("contienealumnos");
+    while (elemento.firstChild) {
+        elemento.removeChild(elemento.firstChild);
+    }
+    if(valorturno!=0 && valorturno!=undefined)
+    {
+
+        document.getElementById("espera").style.visibility = "visible";
+
+        arreglo= [];
+        archivodeconsulta = 'consultareservas.php';
+    
+        tipoconsulta = "consultaxfechayturno";
+
+        let datosconsulta = {tipo : tipoconsulta,fechadesde:ldfechareserva.value,fechahasta:ldfechareserva.value,idalumno  : '',idturno:valorturno}
+
+        fetch("controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+        .then(response => {
+            if(response.status == 200){// console.log(JSON.stringify(response));
+            }return response.json();
+        })
+        .then(data => 
+        {
+            let cantidad =  data.length;
+            if(cantidad>0)
+            {
+                if(data[0]!='desconocido')
+                {
+
+                    for(let a = 0 ;a<cantidad;a++) //llenar la lista
+                    {
+                        toPropuestas = new Object();
+                        toPropuestas.idreserva  = data[a].idreserva;
+                        toPropuestas.idturno    = data[a].idturno;
+                        toPropuestas.usuario    = data[a].usuario;
+                        toPropuestas.apellido   = data[a].apellido;
+                        toPropuestas.nombre     = data[a].nombre;
+                        toPropuestas.asistio    = data[a].asistio;
+                        toPropuestas.foto       = data[a].foto;
+                        
+                        arreglo.push(toPropuestas);
+                    }
+                }   
+            }
+            document.getElementById("espera").style.visibility = "hidden";
+
+            LlenarTabla();
+        })
+        .catch(function(error){console.log(error);});
+    }
+
+}
+
+function LlenarTabla(){
+   
+    rutaimagen="imgalumnos/";
+    contadoralumnos=0;
+    contadorfilas=1;
+    
+    //primer fila
+    unafila="<div id='fila" + contadorfilas + "' class=row></div>";
+    contienealumnos = $("#contienealumnos");
+    contienealumnos.append(unafila);
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+        //contenido de una tarjeta
+        fotito = arreglo[a].foto;
+        if(arreglo[a].foto==''){
+            fotito = "sinimagen.jpg";
+        }
+
+        contenidotarjeta = "<div id='Alu"+arreglo[a].apellido+arreglo[a].nombre + "' class='card' style='width: 18rem;'><button  onclick='Loguea(\"" + arreglo[a].usuario+"\",\"" + arreglo[a].idreserva+"\",\"" + arreglo[a].apellido+arreglo[a].nombre +"\")' data-toggle='modal' data-target='#modalclave' class='btn btn-secondary dropdown-item'><img class='card-img-top img-fluid img-thumbnail' src='" + rutaimagen + fotito+"' alt='Card image cap'></button><div class='card-body'><h5 class='card-title'>"+ arreglo[a].nombre+ " "+ arreglo[a].apellido+   "</h5></div></div></div>";
+        contadoralumnos = contadoralumnos + 1;
+
+
+        //controla maximo 12 columnas por fila
+        if(contadoralumnos>12){
+            contadorfilas=contadorfilas+1;
+            unafila="<div id='fila" + contadorfilas + "' class=row></div>";
+            contienealumnos = $("#contienealumnos");
+            contienealumnos.append(unafila);
+        }
+        
+        //inserta en la fila
+        contienefilas = $("#fila"+contadorfilas);
+        contienefilas.append(contenidotarjeta);
+    }
+    document.getElementById("espera").style.visibility = "hidden";
+}
+document.getElementById("fechareserva").addEventListener('input', ValidarCamposConsulta);
+
+function ReconocerCampos(){
+  ldfechareserva = document.getElementById("fechareserva");
+    ldaviso =  document.getElementById("subtitulo");
+}
+
+function Loguea(usuariopasado,idreservapasada,tarjetanomapepasada){
+    event.preventDefault();
+    usuariopideingreso=usuariopasado;
+    idreservapresente=idreservapasada;
+    tarjetanomape=tarjetanomapepasada;
+}
+function VerificaIngresoUsuario()
+{
+
+    claveingresada = document.getElementById("password").value;
+    let datosconsulta = {usuario:usuariopideingreso,clave:claveingresada,tipo:"consulta"}
+    fetch('controladores/consultaalumnospas.php',{method:'POST',body:JSON.stringify(datosconsulta),headers:{'Content-Type':'application/Json'}})
+    .then(response=>{
+    if(response.status==200)
+    {
+        return response.json();
+    }
+    })
+    .then(data => 
+    {
+        document.getElementById("password").value = '';
+        let cantidad =  data.length;
+        if(cantidad>0)
+        {
+            if(data[0]!="desconocido")
+            {
+  
+                archivodeconsulta = 'guardarasistencia.php';
+                datosconsulta = {idreserva:idreservapresente,asistio:1}
+                fetch('controladores/'+archivodeconsulta,{method:'POST',body:JSON.stringify(datosconsulta),headers:{'Content-Type':'application/Json'}})
+                .then(response=>{
+                    if(response.status==200)
+                    {
+                        return response.json();
+                    }
+                })
+                .then(data => 
+                {
+                    if(data>0)
+                    {
+                        document.getElementById("Alu"+tarjetanomape).remove();
+                        
+                        CambiaColorPantalla('#008000');
+
+                        Swal.fire({
+                            title:"Presente",
+                            text:"Registramos el presente",
+                            icon:"success",
+                            showCancelButton: false,
+                            confirmButtonColor: '#008000',
+                            confirmButtonText: 'Ok'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                CambiaColorPantalla("#ffffff");
+                            }
+                        })
+
+                        
+                        
+                        sonidook.play();
+                        
+
+                    }else{
+                        sonidoerror.play();
+                        Swal.fire({
+                            title:"Error de red",
+                            text:"Probablemente no hay conectividad, vuelve a intentarlo",
+                            icon:"error",
+                            showCancelButton: false,
+                            confirmButtonColor: '#008000',
+                            confirmButtonText: 'Ok'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                CambiaColorPantalla("#ffffff");
+                            }
+                        })
+                    }
+                    
+                    document.getElementById("espera").style.visibility = "hidden";
+                })
+                .catch(function(error){console.log(error);});
+            }
+            else{
+                sonidoerror.play();
+                Swal.fire({
+                    title:"Clave errónea",
+                    text:"Vuelve a intentarlo",
+                    icon:"info",
+                    showCancelButton: false,
+                    confirmButtonColor: '#008000',
+                    confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            CambiaColorPantalla("#ffffff");
+                        }
+                    })
+                document.getElementById("espera").style.visibility = "hidden";
+            }
+        }
+        else{
+            sonidoerror.play();
+            CambiaColorPantalla("#ff0000");
+                Swal.fire({
+                    title:"Clave errónea",
+                    text:"Vuelve a intentarlo",
+                    icon:"info",
+                    showCancelButton: false,
+                    confirmButtonColor: '#008000',
+                    confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            CambiaColorPantalla("#ffffff");
+                        }
+                    })
+                document.getElementById("espera").style.visibility = "hidden";
+            }
+        document.getElementById("espera").style.visibility = "hidden";
+    })
+    .catch(function(error){console.log(error);});
+}
+function CambiaColorPantalla(color){
+    document.body.style.backgroundColor= color;
+}
+
+
+
+function ValidarCamposConsulta(){
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  if(ldaviso)
+      ldaviso.innerHTML = "";
+
+  if(ldfechareserva.value == "")
+      ldaviso.innerHTML = 'Se necesitan fechas de inicio y fin para la consulta!';
+  else if(ldfechareserva.value != ""){
+    valorturno=DevuelveValorTurno();
+    ListarAlumnos(true,valorturno);
+  }
+}
+
+async function ColocaFechas(){
+  ldfechareserva.value = CreaFechaBDD(FechaActualddmmyyyy());
+}
+
+
+async function CargarListaActividades(){
+    $("#contienelista").load("componenteactividades.html?n="+version);
+}
+
+async function CargarListaTurnos(){
+    $("#contieneturno").load("componenteturnos.html?n="+version);
+}
+
+
+feres = document.getElementById("fechareserva");
+feres.addEventListener("change",ListaTurnoXfecha,false);
+
+function ListaTurnoXfecha(){
+    listaTurnos("componenteturnos",ldfechareserva.value,DevuelveValorActividad());
+}
+
+
+$(document).ready(function(){
+    ReconocerCampos();
+    CargarListaActividades();
+    CargarListaTurnos();
+    ColocaFechas();
+});
+
+</script>

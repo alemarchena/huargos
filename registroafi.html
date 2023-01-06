@@ -1,0 +1,92 @@
+<style>
+    #cabeza{
+    background-color: rgb(130, 186, 190);
+}
+</style>
+</style>
+<div id="cabeza" class="d-flex justify-content-center pt-2">
+    <h5>Registro</h5>
+</div>
+<br>
+
+<div id="camposlogueo"></div>
+
+<script>
+
+    actual = "registroafi";
+
+    ruta = '';
+   
+
+    function CargaCamposLogueo(){
+        $("#camposlogueo").load("camposlogueoafi.html?n="+version);
+    }
+    
+    CargaCamposLogueo();
+
+/*REGISTRO EN EL SISTEMA*/
+
+function handleSignUp() {
+        
+    event.preventDefault();
+
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+
+    .then(function (firebaseUser) {
+        // mensajeok(email, password);
+        sendEmailVerification();
+    })
+
+    .catch(function (error) 
+    {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+
+            
+            Swal.fire({
+                title: 'Atention!',
+                text: 'The password is very weak, use numbers and letters',
+                icon: 'warning',
+                confirmButtonText: 'Ok'
+            });
+
+        } else if(errorCode == 'auth/email-already-in-use'){
+            Swal.fire({
+                title: 'Atention!',
+                text: 'This user already exists',
+                icon: 'info',
+                confirmButtonText: 'Ok'
+            });
+            console.log("Result:" + errorCode + ",Message error" + errorMessage);
+        }else if(errorCode == 'auth/invalid-email'){
+            Swal.fire({
+                title: 'Atention!',
+                text: 'Use a valid email addres',
+                icon: 'info',
+                confirmButtonText: 'Ok'
+            });
+        }
+
+    });
+
+    function sendEmailVerification() {
+        firebase.auth().currentUser.sendEmailVerification().then(function () {
+            
+        });
+        // document.getElementById('quickstart-verify-email').style.visibility = "hidden";
+        swal("Le enviamos un email", "Revise su correo");
+        Swal.fire({
+                title: 'Perfecto',
+                text: 'Le enviamos un link de confirmación al email, recuerde mirar la carpeta spam.',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            });
+        firebase.auth().signOut();
+    }
+
+}
+</script>

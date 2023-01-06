@@ -1,0 +1,445 @@
+<style>
+#tabladetalle.dataTable td {
+  font-size: 0.9em;
+}
+#espera{visibility: hidden;}
+
+</style>
+<!-- -------------------------------------------------- Modal ------------------------------------- -->
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Detalle de uso de turnos</h5>
+        </div>
+        <div id="divdetalle" class="row">
+            <div class="col-sm-12" style="margin: 0.1em;">
+                <table id="tabladetalle" class="display table table-striped" style="width: 100%!important;">        
+                    <thead><tr>
+                        <th>Movimiento</th>
+        
+                        <th>Actividad</th>
+                        <th>Fecha actividad</th>
+                        <th>Fecha marcación</th>
+                        <th>Asistió</th>
+        
+                        <th>Cantidad pagada</th>
+                        <th>Monto pagado</th>
+                        <th>Fecha de pago</th>
+                        <th>Fecha de guardado</th>
+        
+                    </tr></thead>
+                    <tbody><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- -------------------------------------------------- Fin Modal ------------------------------------- -->
+<div class="d-flex justify-content-center">
+    <h5>Consulta por alumno</h5>
+</div>
+<!-- <div class="d-flex justify-content-center">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="checktodos">
+        <label class="form-check-label" for="checktodos">Incluir todos</label>
+    </div>
+</div> -->
+<div id="espera" class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="text-align: center;">
+        <input id="inputbuscador" class="form-control" type="text" placeholder=" Buscar por nombre, apellido,dni o whatsapp (combinadas)">
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <div class="tooltipbutton">
+            <button type="button" class="btn btn-primary" onclick="Listar()"><span class="material-icons md-light md-48">search</span> </a>
+            <span class="tooltiptext">Buscar x alumno</span>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <table id="tabla" class="display table table-striped" style="width: 100%!important;">        
+            <thead><tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Dni</th>
+                <th>Whatsapp</th>
+                <th>Ver Detalle</th>
+            </tr></thead>
+            <tbody><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    
+var arreglodetalle=[];
+    
+var ldtodos;
+var ldbuscador;
+
+function ReconocerCampos()
+{
+    // ldtodos         = document.getElementById("checktodos");
+    ldinputbuscador = document.getElementById("inputbuscador");
+}
+
+function Listar()
+{
+    arreglo= [];
+    arreglopalabras=[];
+    arreglopalabrasprocesadas=[];
+    document.getElementById("espera").style.visibility = "visible";
+
+    archivodeconsulta = 'buscarxalumno.php';
+    
+    // if(ldtodos.checked)
+    //     arreglopalabras=[];
+    // else{
+
+        const editor = ldinputbuscador.value;
+        arreglopalabras = editor.split(' ');
+
+        for(b=0;b<arreglopalabras.length;b++)
+        {
+            if(arreglopalabras[b].trim()!="")
+            {
+                itempalabra = new Object();
+                itempalabra.palabra = arreglopalabras[b].trim(),
+                arreglopalabrasprocesadas.push(itempalabra);
+            }
+        }
+    // }
+
+    paqueteJsonBuscarprocesadas =JSON.stringify( arreglopalabrasprocesadas );
+
+    if(arreglopalabrasprocesadas.length==0){
+        llenartabla();
+    }else{
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body:paqueteJsonBuscarprocesadas,headers:{'Content-Type':'application/json'}})   
+        .then(response => response.json())
+        .then(data => 
+        {
+            let cantidad =  data.length;
+            
+            if(cantidad > 0)
+            {
+                for(let a = 0 ;a<cantidad;a++) //llenar la lista
+                {
+                    toPropuestas = new Object();
+                    toPropuestas.idalumno   = data[a].idalumno;
+                    toPropuestas.nombre     = data[a].nombre;
+                    toPropuestas.apellido   = data[a].apellido;
+                    toPropuestas.dni        = data[a].dni;
+
+                    linkeadowhatsapp        =data[a].whatsapp;
+                    linkeadowhatsapp=linkeadowhatsapp.trim().replace('+', '');
+                    linkeadowhatsapp=linkeadowhatsapp.trim().replace('-', '');
+                    linkeadowhatsapp=linkeadowhatsapp.trim().replace('(', '');
+                    linkeadowhatsapp=linkeadowhatsapp.trim().replace(')', '');
+                    toPropuestas.whatsapp   = linkeadowhatsapp;
+                    
+                    arreglo.push(toPropuestas);
+                }
+
+                // --------------------------- Consulta el detalle de cada alumno -----------------------
+                arregloprocesado=[];
+                arreglodetalle=[];
+                archivodeconsulta = 'buscardetallexalumno.php';
+
+                for(m=0;m<arreglo.length;m++)
+                {
+                    itemdetalle = new Object();
+                    itemdetalle.idalumno = arreglo[m].idalumno,
+                    arregloprocesado.push(itemdetalle);
+                }
+
+                paqueteJsonProcesado =JSON.stringify( arregloprocesado );
+                fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body:paqueteJsonProcesado,headers:{'Content-Type':'application/json'}})   
+                .then(response => response.json())
+                .then(data => 
+                {
+                    let cantidad =  data.length;
+                    
+                    if(cantidad > 0)
+                    {
+                        for(let det = 0 ;det<cantidad;det++) //llenar la lista
+                        {
+                            toDetalles = new Object();
+                            toDetalles.idalumno                 = data[det].idalumno;
+                            toDetalles.reservaoventa            = data[det].reservaoventa;
+
+                            if(data[det].reservaoventa == "Reserva"){
+                                toDetalles.idactividad          = data[det].idactividad;
+                                toDetalles.actividad            = data[det].actividad;
+                                toDetalles.fechaactividad       = data[det].fechaactividad;
+                                toDetalles.asistio              = data[det].asistio;
+                                toDetalles.fechamarcacion       = data[det].fechamarcacion;
+                            }else{
+                                toDetalles.fechaguardadopago    = data[det].fechaguardadopago;
+                                toDetalles.fechapago            = data[det].fechapago;
+                                toDetalles.montopagado          = data[det].montopagado;
+                                toDetalles.tiempopagado         = data[det].tiempopagado;
+                            }
+                            
+                            arreglodetalle.push(toDetalles);
+                        }
+                    }
+                });
+
+                // -------------------------------------- Fin detalle ---------------------------------------
+            }
+            llenartabla();
+        })
+        .catch(function(error){
+            console.log(error);
+            document.getElementById("espera").style.visibility = "hidden";
+        
+        });
+    }
+
+    
+}
+
+function llenartabla()
+{
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+    tabla.clear().draw();
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+
+        linkeadowhatsapp = "<a href='https://wa.me/" + arreglo[a].whatsapp+ "' target='_blank'>" + arreglo[a].whatsapp+ "</a>"
+        tabla.row.add([
+            "<p>" + arreglo[a].idalumno + "</p>" ,  
+            arreglo[a].nombre,
+            arreglo[a].apellido,
+            arreglo[a].dni,
+            linkeadowhatsapp,
+            "<button id='Ver" + arreglo[a].idalumno + "'class='btn btn-success btn-sm' type='button' data-toggle='modal' data-target='.bd-example-modal-lg' data-whatever='@getbootstrap' onclick='llenartablaDetalle(\"" + arreglo[a].idalumno + "\")'><span class='material-symbols-outlined'>visibility</span></button>",
+        ]).draw(false);
+    }
+    document.getElementById("espera").style.visibility = "hidden";
+
+}
+
+
+function llenartablaDetalle(idpasado)
+{
+    if ($.fn.dataTable.isDataTable('#tabladetalle')) {
+        tabla = $('#tabladetalle').DataTable();
+    }
+
+    tabla.clear().draw();
+    _totalasistio=0;
+    _totaltiempopagado=0;
+    _totalmontopagado=0;
+
+    for(let a = 0 ;a<arreglodetalle.length;a++)
+    {
+        if(arreglodetalle[a].idalumno == idpasado)
+        {
+            if(arreglodetalle[a].reservaoventa=="Reserva")
+            {
+                _movimiento     = "2-" + arreglodetalle[a].reservaoventa;
+                _actividad      = arreglodetalle[a].actividad;
+                _fechaactividad = conviertefechahispana(arreglodetalle[a].fechaactividad);
+                _asistio        = arreglodetalle[a].asistio;
+                if(_asistio==1){
+                    _textoasistio = "Si";
+                    _fechamarcacion = conviertefechahispanayhora(arreglodetalle[a].fechamarcacion);
+                }
+                else{
+                    _textoasistio = "No";
+                    _fechamarcacion='';
+                }
+
+                _totalasistio   = parseInt(_totalasistio) + parseInt(_asistio);
+
+                _tiempopagado       = '';
+                _montopagado        = '';
+                _fechapago          = '';
+                _fechaguardadopago  = '';
+
+            }else{
+                _movimiento     = "1-" +arreglodetalle[a].reservaoventa;
+                _actividad      = '';
+                _fechaactividad = '';
+                _fechamarcacion = '';
+                _textoasistio   = '';
+
+                _tiempopagado       = arreglodetalle[a].tiempopagado;
+                _totaltiempopagado  = parseInt(_totaltiempopagado) + parseInt(_tiempopagado);
+ 
+                _montopagado        = arreglodetalle[a].montopagado;
+                _totalmontopagado   = parseFloat(_totalmontopagado) + parseFloat(_montopagado);
+
+                _fechapago          = conviertefechahispana(arreglodetalle[a].fechapago);
+                _fechaguardadopago  = conviertefechahispanayhora(arreglodetalle[a].fechaguardadopago);
+            }
+
+            tabla.row.add([
+           
+                _movimiento,
+                _actividad,
+                _fechaactividad,
+                _fechamarcacion,
+                _textoasistio,
+
+                _tiempopagado,
+                _montopagado,
+                _fechapago,
+                _fechaguardadopago,
+           
+            ]).draw(false);
+        }   
+    }
+
+    tabla.row.add([
+        "<p style='color:blue';>3-Total</p>",
+        '',
+        '',
+        '',
+        "<p style='color:blue';>"+_totalasistio+"</p>",
+        "<p style='color:blue';>"+_totaltiempopagado+"</p>",
+        "<p style='color:blue';>"+_totalmontopagado+"</p>",
+        '',
+        '',
+    ]).draw(false);
+}
+
+tocoenter = false;
+
+
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13 && tocoenter==false) {
+        tocoenter = true;
+        event.preventDefault();
+        event.stopPropagation();
+        Listar();
+        setTimeout(() => {
+            tocoenter = false;
+        }, 500);
+    }
+    // if (event.keyCode === 27) {
+    //     Volver();
+    // }
+});
+
+
+async function Configuratabla() 
+{
+    $('#tabla').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 100,
+        "columnDefs": [
+        { "width": "5%", "targets": 0 },{ "width": "10%", "targets": 1 },{ "width": "10%", "targets": 2 },
+        { "width": "10%", "targets":3 },{ "width": "20%", "targets": 4 },{ "width": "10%", "targets": 5 },
+
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+        ],
+    });
+
+    await Listar();
+}
+
+async function ConfiguratablaDetalle() 
+{
+    $('#tabladetalle').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 100,
+        "columnDefs": [
+        { "width": "20%", "targets": 0 },{ "width": "10%", "targets": 1 },{ "width": "10%", "targets": 2 },
+        { "width": "10%", "targets":3 },{ "width": "10%", "targets": 4 },{ "width": "10%", "targets": 5 },
+        { "width": "10%", "targets":6 },{ "width": "10%", "targets": 7 },{ "width": "10%", "targets": 8 },
+     
+
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+        ],
+    });
+
+}
+
+
+
+$(document).ready(function(){
+    ReconocerCampos();
+    Configuratabla();
+    ConfiguratablaDetalle();
+});
+</script>

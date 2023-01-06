@@ -1,0 +1,205 @@
+<style>
+
+#espera{visibility: hidden;}
+
+</style>
+
+<div class="d-flex justify-content-center">
+    <h5>Inasistencias a clases</h5>
+</div>
+<div id="espera" class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="text-align: center;">
+        <label for="cantidadomayor">Ingrese la cantidad igual o mayor de inansistencias a consultar  </label>
+        <input id="cantidadomayor" class="form-control" type="text" placeholder="Cantidad disponible o menor" value="3">
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <div class="tooltipbutton">
+            <button type="button" class="btn btn-primary" onclick="ListarInasistencias()"><span class="material-icons md-light md-48">search</span> </a>
+            <span class="tooltiptext">Buscar</span>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <table id="tabla" class="display table table-striped" style="width: 100%!important;">        
+            <thead><tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Whatsapp</th>
+                <th>email</th>
+                <th>Cantidad pagada</th>
+                <th>Inasistencias</th>
+            </tr></thead>
+            <tbody><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    
+var arreglodetalle=[];
+    
+
+
+function ReconocerCampos()
+{
+
+}
+
+function ListarInasistencias()
+{
+    arreglo= [];
+
+    document.getElementById("espera").style.visibility = "visible";
+    
+    let cantidadomayor = document.getElementById('cantidadomayor');
+    archivodeconsulta = 'buscarinasistencias.php';
+
+    cantidadomayor.value == "" ? cantidad = 0 : cantidad = cantidadomayor.value;
+
+    let datosconsulta = {cantidad : cantidad}
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body:JSON.stringify(datosconsulta),headers:{'Content-Type':'application/json'}})   
+    .then(response => response.json())
+    .then(data => 
+    {
+        let cantidad =  data.length;
+        
+        if(cantidad > 0)
+        {
+            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+            {
+                toPropuestas = new Object();
+                toPropuestas.id   = data[a].id;
+                toPropuestas.nombre     = data[a].nombre;
+                toPropuestas.apellido   = data[a].apellido;
+                toPropuestas.email      = data[a].email;
+                
+                linkeadowhatsapp        =data[a].whatsapp;
+                linkeadowhatsapp=linkeadowhatsapp.trim().replace('+', '');
+                linkeadowhatsapp=linkeadowhatsapp.trim().replace('-', '');
+                linkeadowhatsapp=linkeadowhatsapp.trim().replace('(', '');
+                linkeadowhatsapp=linkeadowhatsapp.trim().replace(')', '');
+                toPropuestas.whatsapp   = linkeadowhatsapp;
+
+                toPropuestas.tiempopagado   = data[a].tiempopagado;
+                toPropuestas.noasistio      = data[a].noasistio;
+                
+                arreglo.push(toPropuestas);
+            }
+        }
+        llenartabla();
+    })
+    .catch(function(error){
+        console.log(error);
+        document.getElementById("espera").style.visibility = "hidden";
+    
+    });
+}
+
+function llenartabla()
+{
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+    tabla.clear().draw();
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+
+        linkeadowhatsapp = "<a href='https://wa.me/" + arreglo[a].whatsapp+ "' target='_blank'>" + arreglo[a].whatsapp+ "</a>"
+        tabla.row.add([
+            "<p>" + arreglo[a].id + "</p>" ,  
+            arreglo[a].nombre,
+            arreglo[a].apellido,
+            linkeadowhatsapp,
+            arreglo[a].email,
+            arreglo[a].tiempopagado,
+            arreglo[a].noasistio,
+            // "<button id='Ver" + arreglo[a].idalumno + "'class='btn btn-success btn-sm' type='button' data-toggle='modal' data-target='.bd-example-modal-lg' data-whatever='@getbootstrap' onclick='llenartablaDetalle(\"" + arreglo[a].idalumno + "\")'><span class='material-symbols-outlined'>visibility</span></button>",
+        ]).draw(false);
+    }
+    document.getElementById("espera").style.visibility = "hidden";
+
+}
+
+
+tocoenter = false;
+
+
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13 && tocoenter==false) {
+        tocoenter = true;
+        event.preventDefault();
+        event.stopPropagation();
+        ListarInasistencias();
+        setTimeout(() => {
+            tocoenter = false;
+        }, 500);
+    }
+    // if (event.keyCode === 27) {
+    //     Volver();
+    // }
+});
+
+
+async function Configuratabla() 
+{
+    $('#tabla').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 100,
+        "columnDefs": [
+        { "width": "5%", "targets": 0 },{ "width": "10%", "targets": 1 },{ "width": "10%", "targets": 2 },
+        { "width": "10%", "targets":3 },{ "width": "20%", "targets": 4 },{ "width": "10%", "targets": 5 },
+
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+        ],
+    });
+
+    await ListarInasistencias();
+}
+
+
+$(document).ready(function(){
+    ReconocerCampos();
+    Configuratabla();
+});
+</script>

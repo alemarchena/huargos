@@ -1,0 +1,149 @@
+<div class="input-field col s12">
+    <div (click)="$event.stopPropagation()">
+        <select  class="form-select" aria-label="Default select example" id="componenteturnos" name="componenteturnos" ></select>
+    </div>
+</div>
+<script>
+    arregloTurnos=[];
+    
+    function listaTurnos(lista,fechapasada,idactividadpasada) 
+    {
+            ruta = '';
+            if(indexopanel=='indexafi'){
+                ruta = '../';
+            }else if(indexopanel=='panelafi'){
+                ruta = '../';
+            }
+
+            $('#' + lista).empty(); //limpiar la lista
+            //Creo el item llamado "Seleccione una subcategoria"
+            let arreglo = []; 
+            arreglo.push('<option value = "" selected;">Seleccione un turno</option>'); //primer item de la lista
+            $('#' + lista).append(arreglo);
+
+            archivodeconsulta = 'consultaturnos.php';
+
+            if(idactividadpasada!='')
+            {
+
+                tipoconsulta = "consultaxfechayactividad";
+            // else
+            //     tipoconsulta = "consultaxfecha";
+
+                let datosconsulta = {tipo : tipoconsulta,idturno  : 0,fecha:fechapasada,fechahasta:fechapasada,idactividad:idactividadpasada}
+                fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+                .then(response => response.json())
+                .then(function(data){
+                    let cantidad = data.length;
+                    if(data[0]!='desconocido')
+                    {
+                        if(cantidad>0){
+
+                            var arreglo = []; 
+                            arregloTurnos=[];
+
+                            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+                            {
+                                arreglo = arreglo.concat('<option value = ' + data[a].idturno + ' > '+  conviertefechahispana(data[a].fecha) + ' ' +  data[a].horainicio + '</option>');
+                                
+                                toPropuestas = new Object();
+                                toPropuestas.idturno     = data[a].idturno;
+                                toPropuestas.fecha       = data[a].fecha;
+                                toPropuestas.horainicio  = data[a].horainicio;
+                                
+                                arregloTurnos.push(toPropuestas);
+                            }
+                            
+                            $('#' + lista).append(arreglo); //lleno la lista con las opciones traidas de la base de datos
+                            $('#' + lista + ' option:selected').prop('selected',false); //deselecciona el primer item
+                            $('#' + lista).prop('selected',true); //selecciona el primer item de la lista
+                            
+                        }
+                    }
+
+                })
+                .catch(function (error){
+                    console.log(error);
+                });
+            }
+
+            ResetListaTurnos();
+    }
+
+    function ResetListaTurnos(){
+        compo = document.getElementById("componenteturnos");
+        compo.selectedIndex = 0;
+
+        for(let a = 0;a<compo.length;a++){
+        $("#componenteturnos option[value='"+a+"']").attr("selected", false);}
+        $("#componenteturnos option[value='0']").attr("selected", false);
+    }
+
+
+    function DevuelveTextoTurno(){
+        compo = document.getElementById("componenteturnos");
+        let turnoseleccionado = compo.options[compo.selectedIndex];
+        try {
+            return turnoseleccionado.text;
+        }catch(e) {
+        
+        }
+    }
+
+    function DevuelveValorTurno(){
+        compo = document.getElementById("componenteturnos");
+        let turnoseleccionado = compo.options[compo.selectedIndex];
+
+        try {
+            return turnoseleccionado.value;
+        }catch(e) {
+
+        }
+    }
+
+    function ConsultaTurno(){
+
+        compo = document.getElementById("componenteturnos");
+        let turnoseleccionado = compo.options[compo.selectedIndex];
+        
+        if(turnoseleccionado.value!=0 && arregloTurnos.length>0)
+        {
+            for(let a = 0 ;a<arregloTurnos.length;a++) //llenar la lista
+            {
+                if(turnoseleccionado.value == arregloTurnos[a].idturno)
+                {
+                    try {ldhorainicio.value = arregloTurnos[a].horainicio;}catch(e) {} //el caso de trabajar con reservas desde el panel
+                    
+                    try {valorturno = arregloTurnos[a].idturno;
+                        ValidarCamposConsulta(); //el caso de trabajar con las asistencias
+                    }catch(e) {}
+
+                    return arregloTurnos[a].horainicio;
+                }
+            }
+        }
+        
+    }
+    
+function AsignaElementoAListaTurno(idpasado){
+
+    compo = document.getElementById("componenteturnos");
+
+    for(let a = 0;a<compo.length;a++)
+    {
+    $("#componenteturnos option[value='"+a+"']").attr("selected", false);
+    if(compo.options[a].value == idpasado){
+            compo.selectedIndex = a;
+        }
+    }
+}
+    
+    compoact = document.getElementById("componenteturnos");
+    compoact.addEventListener("change", ConsultaTurno, false);
+
+
+    $(document).ready(function () 
+    {
+        listaTurnos("componenteturnos",ldfechareserva.value,DevuelveValorActividad());
+    });
+</script>

@@ -1,0 +1,242 @@
+<div class="d-flex justify-content-center">
+    <h4>Tu Info para ingresar</h4>
+</div>
+<div class="row align-items-center form-group">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="padding: 0.5em;">
+
+        <label for="usuario" class="col-form-label">Nick o Usuario de ingreso:</label>
+        <input type="text" class="form-control" id="usuario" class="form-control caja" aria-describedby="passwordHelpInline0" placeholder="Con este usuario entrarás al sistema" style="color: rgb(5, 63, 187);text-align:center;" onkeyup="ValidarEscritura()">
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4">
+        <span id="passwordHelpInline0" class="form-text">
+            Longitud de hasta 30 caracteres
+        </span>
+    </div>
+</div>
+
+
+
+<div class="row" style="margin: 0.5em;">
+    <div class="col">
+        <div class="row align-items-center" >
+            <div class="col-sm-10 col-md-4 offset-md-4">
+                <label for="password">Clave</label>
+                <input type="password" id="password" onkeyup="ValidarEscritura()" placeholder="Escribe tu Contraseña" class="form-control caja" aria-describedby="passwordHelpInline">
+            </div>
+            <div class="col-md-1" >
+                <i class="btn icon fa fa-eye-slash" type="button" id="verclave"></i>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-10 col-md-4 offset-md-4">
+                <span id="passwordHelpInline" class="form-text">
+                    Longitud de 4 a 8 caracteres
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-sm-10 col-md-4 offset-md-4">
+                <label for="password">Repetir Clave</label>
+                <input type="password" id="password1"onkeyup="ValidarEscritura()" placeholder="Repite la Contraseña" class="form-control caja" aria-describedby="passwordHelpInline1">
+            </div>
+            <div class="col-md-1">
+                <i class="btn icon fa fa-eye-slash" type="button" id="verclave1"></i>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-10 col-md-4 offset-md-4">
+                <span id="passwordHelpInline1" class="form-text">
+                Longitud de 4 a 8 caracteres
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-flex justify-content-center">
+    <p id="revisorclaves" class="form-text"></p>
+</div>
+
+<div class="d-flex justify-content-center" style="padding: 1em;">
+    <button id="anterior" onclick="Datos2(0)" class="btn btn-primary" style="margin: 0.5em;">Anterior</button>
+    <button id="siguiente" onclick="Datos2(1)" disabled class="btn btn-primary" style="margin: 0.5em;" onkeyup="ValidarEscritura()">Siguiente</button>
+</div>
+<script>
+
+var ldclave;
+var ldclave1;
+var ldusuario;
+var ldsiguiente;
+var ldrevisorclaves;
+var existe=0;
+
+function ConsultaUsuario()
+{
+    event.preventDefault();
+    event.stopPropagation();
+
+    let datosconsulta = {usuario:ldusuario.value,clave:'',tipo:"consultasolousuario"}
+    fetch('controladores/consultaalumnospas.php',{method:'POST',body:JSON.stringify(datosconsulta),headers:{'Content-Type':'application/Json'}})
+    .then(response=>{
+      if(response.status==200)
+      {
+        return response.json();
+      }
+    })
+    .then(data=>{
+  
+        if(data.length>0)
+        {
+            if(ldusuario.value ==data[0].usuario)
+            {
+                Swal.fire({
+                    title:"Usuario existente",
+                    text:"Este usuario ya existe, intente con otro nombre",
+                    icon:'info',
+                    button:"Ok"
+                });
+            }else{
+                $ ("#bloqueregistro").load("./cicloregistro/datos2.html?n="+version);
+            }
+        }else{
+            $ ("#bloqueregistro").load("./cicloregistro/datos2.html?n="+version);
+
+        }
+    })
+    .catch(function(error){
+        Swal.fire({
+            title:"Error",
+            text:"Se produjo un error al revisar la existencia del usuario!",
+            icon:'error',
+            button:"Ok"
+        });
+        console.log(error);
+      });
+}
+
+function Datos2(opcion){
+    GuardarDatosTemporales();
+
+    if(opcion==0)
+        $("#bloqueregistro").load("./cicloregistro/inicioregistro.html?n="+version);
+    else if(opcion==1)
+    {
+        if(ValidarInfo()){
+            
+            ConsultaUsuario();
+        }
+    }
+    event.preventDefault();
+    event.stopPropagation();
+}
+function GuardarDatosTemporales(){
+    usuario = ldusuario.value.trim();
+    clave = ldclave.value.trim();
+    clave1 = ldclave1.value.trim();
+}
+
+function CargarDatos(){
+    if(usuario!= undefined)
+        ldusuario.value = usuario;
+
+    if(clave!= undefined)
+        ldclave.value = clave;
+    
+    if(clave1!= undefined)
+        ldclave1.value = clave1;
+    
+    ldusuario.focus();
+    ValidarEscritura();
+}
+
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        if(ValidarInfo()){
+            if(ValidarClaves()){
+                Datos2(1);
+            }
+        }
+    }
+});
+
+function ReconoceCampos(){
+    ldusuario = document.getElementById("usuario");
+    ldclave = document.getElementById("password");
+    ldclave1 = document.getElementById("password1");
+    ldsiguiente = document.getElementById("siguiente");
+    ldrevisorclaves = document.getElementById("revisorclaves");
+}
+
+    function ValidarInfo(){
+        if( ldusuario.value.toString().trim() ==''|| ldclave.value.trim() == '' || ldclave1.value.trim() == '' || ldclave.value.toString().trim() != ldclave1.value.toString().trim())
+        {
+            return false;
+        }
+        else
+            return true;
+    }
+
+function ValidarClaves(){
+    ldrevisorclaves.style.color = "red";
+    ldrevisorclaves.innerHTML ='';
+    ldsiguiente.disabled = true;
+
+    if(ldusuario.value.toString().trim().length < 5 || ldusuario.value.toString().trim().length > 30){
+        ldrevisorclaves.innerHTML = "El usuario deben contener entre 5 y 30 dígitos";
+        
+        return false;
+    }else{
+        if(ldclave.value.toString().trim().length < 4 || ldclave1.value.trim().length > 8)
+        {
+            ldrevisorclaves.innerHTML = "Las claves deben tener entre 4 y 8 dígitos";
+            return false;
+        }
+        else if(ldclave.value.toString().trim() != ldclave1.value.toString().trim())
+        {
+            ldrevisorclaves.innerHTML = "Las claves deben ser iguales";
+            return false;
+        }else{
+            
+            ldsiguiente.disabled = false;
+
+            return true;
+        }
+    }
+
+    
+}
+    function mostrarPassword(objeto) { 
+        var cambio = document.getElementById(objeto); 
+        if (cambio.type == "password") { 
+            cambio.type = "text"; 
+            $('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye'); 
+        } else { 
+            cambio.type = "password"; 
+            $('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash'); 
+        } 
+    } 
+    $("#verclave").click(function () {mostrarPassword("password");});
+
+    $("#verclave1").click(function () {mostrarPassword("password1");});
+
+    function ValidarEscritura(){
+        if(ldclave.value == '' || ldclave1.value == '' || ldusuario.value == ''){
+            ldsiguiente.disabled = true;
+        }
+        else{
+            ValidarClaves();
+        }
+    }
+
+
+
+ReconoceCampos();
+CargarDatos();
+
+</script>

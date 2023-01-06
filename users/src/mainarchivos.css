@@ -1,0 +1,80 @@
+
+.contenedorimagenes{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+.drag-area{
+    border: 5px dashed #ddd;
+    height: 200px;
+    min-width: 600px;
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* Se activa cuando se arrastran los archivos */
+.drag-area.active{
+    background-color: #98bef7;
+    color: rgb(24, 24, 24);
+    border: 2px dashed #618ac9;
+}
+
+.drag-area h5{
+    /* font-size: 30px; */
+    /* font-weight: 500; */
+    color: rgb(0, 119, 167);
+}
+
+.drag-area span{
+    font-size: 15px;
+    font-weight: 500;
+    color: rgb(24, 24, 24);
+}
+
+.drag-area button{
+    padding: 5px 25px 5px 25px;
+    font-size: 15px;
+    border: 0px;
+    outline: none;
+    background-color: #09799b;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin : 20px;
+}
+
+.file-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px #ddd;
+}
+
+#preview{
+    margin-top: 10px;
+}
+
+.status-text{
+    padding: 0px 10px;
+}
+
+.success{
+    color: #52ad5a;
+}
+
+.failure{
+    color: #ff0000;
+}

@@ -1,0 +1,276 @@
+<style>
+    form{
+        padding: 2em;
+    }
+    .contenidocentrado{
+        text-align: center;
+        padding: 1em;
+    }
+    #divimportar{
+        padding: 1em;
+    }
+</style>
+<div>
+    <div class="d-flex justify-content-center">
+        <div class="col contenidocentrado">
+             <a id="logoempresa" href="#">
+                <img src="./img/logoempresa.png" alt="" width="auto" height="200px">   
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-sm-3">
+            <select class="form-control" id="opcionesimportacion" name="opcionesimportacion"></select>
+        </div>
+    </div>
+    <div id="divimportar" style="display: none;">
+        <div class="d-flex justify-content-center">
+            <form action="">
+            <label for="myfile">Selecciona un archivo:</label>
+            <input type="file" id="archivoImportar" name="archivoImportar"><br><br>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center ">
+            <div class="col-sm-3 contenidocentrado" >
+                <button class="btn btn-success" id="importar" name="importar">Importar</button>
+            </div>
+            <div class="col-sm-3 contenidocentrado" >
+                <button class="btn btn-warning" id="eliminar" name="eliminar">Eliminar</button>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="col-sm-3 contenidocentrado">
+                <label id="registros" for=""></label>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    arrobjimp = [];
+    opcionimportar="";
+    var paquete = [];
+
+    function fileReader(oEvent) 
+    {
+        var oFile = oEvent.target.files[0];
+        var sFilename = oFile.name;
+
+        var reader = new FileReader();
+        var result = {};
+        arrobjimp = [];
+
+        reader.onload = function (e) {
+            var data = e.target.result;
+            data = new Uint8Array(data);
+
+            var workbook = XLSX.read(data, { type: 'array' });
+            
+
+            var result = {};
+            workbook.SheetNames.forEach(function (hoja) {
+                if(hoja=='Exportable'){
+
+                    var roa = XLSX.utils.sheet_to_json(workbook.Sheets[hoja], { header: 1 });
+                    if (roa.length) 
+                    {
+                        result[hoja] = roa;
+
+                        //Importacion de propuestas
+                        if(opcionimportar == "idimportini") //opcion seleccionada en el downlist
+                        {
+                            if(roa[0][0]=="Bodega")    //valor de verificacion en el primer registro del archivo
+                            {
+                                for(var fila=1 ;fila < roa.length;fila++)
+                                {
+                                    var itemfila = new Object();
+                                    roa[fila][0] != undefined ? itemfila.bodega     = roa[fila][0] :  itemfila.bodega           = "";
+                                    roa[fila][1] != undefined ? itemfila.propuesta  = roa[fila][1] : itemfila.propuesta         = "";
+                                    roa[fila][2] != undefined ? itemfila.textovalor = roa[fila][2] : itemfila.textovalor    = "";
+                                    roa[fila][3] != undefined ? itemfila.valorpesos = roa[fila][3] : itemfila.valorpesos      = "";
+                                    roa[fila][4] != undefined ? itemfila.valordolar = roa[fila][4] : itemfila.valordolar      = "";
+                                    roa[fila][5] != undefined ? itemfila.zona       = roa[fila][5] : itemfila.zona              = "";
+                                    roa[fila][6] != undefined ? itemfila.imagen     = roa[fila][6] : itemfila.imagen              = "";
+                                    roa[fila][7] != undefined ? itemfila.servicio   = roa[fila][7] : itemfila.servicio              = "";
+                                
+                                    var objetoJsonfila = JSON.stringify(itemfila);
+                                    arrobjimp.push(objetoJsonfila);
+                                    // console.log(objetoJsonfila);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
+            
+            // see the result, caution: it works after reader event is done.
+            // console.log(result);
+        };
+        reader.readAsArrayBuffer(oFile);
+    }
+
+    $('#archivoImportar').change(function (ev) {
+        fileReader(ev);
+    });
+
+    function cargarLista(lista) {
+        $("#" + lista).empty();
+        var a = [];
+        a.push('<option value = "" selected >Selecione un archivo</option >');
+        a = a.concat('<option value = \'idimportini\' >Propuestas</option>');
+        // a = a.concat('<option value = \'idimportact\' >Actualizar Productos</option>');
+        
+        $("#" + lista).append(a);
+
+        //selecciona el primer item
+        $("#" + lista + " option:selected").prop("selected", false);
+        $(this).prop("selected", true);
+    }
+
+    
+
+    $("#opcionesimportacion").on('change',function () {
+
+        opcionimportar = document.getElementById("opcionesimportacion").value;
+    
+        if (opcionimportar != "")
+            document.getElementById("divimportar").style.display = "block";
+        else
+            document.getElementById("divimportar").style.display = "none";
+    });
+
+    $("#eliminar").click(function () {
+
+        deseaEliminar();
+    });
+
+    function deseaEliminar(){
+      Swal.fire({
+      title: 'Seguro desea eliminar?',
+      text: "Esto no podrá revertirse!",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            eliminar();
+        }
+      })
+    }
+
+    $("#importar").click(function () {
+
+        if (opcionimportar == "idimportini")
+        {
+            empaquetar();
+        }   
+        
+    });
+    
+    async function empaquetar(){
+        paquete = [];
+        document.getElementById("registros").innerHTML = "";
+        
+        for (var a = 0; a < arrobjimp.length; a++) {
+            JSON.parse(arrobjimp[a], function (k, v) {
+                // console.log("JP:" + arrobjimp[a]);
+                if (k == "bodega" && v != "") //solo va a tener en cuenta los items con titulo
+                paquete.push(arrobjimp[a]);
+            });
+        }
+        
+        await guardarPaquete();
+    }
+
+    async function eliminar(){
+
+        fetch('./controladores/eliminarpropuestas.php')
+        .then(response => {
+            if(response.statusText == "OK"){
+                Swal.fire({
+                    title: 'Eliminados',
+                    text: 'Los datos fueron borrados correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
+            }else{
+                console.log(response.status);
+            }
+        })
+        .catch( function(e){
+            console.log(e);
+        })
+
+        
+    }
+
+    function guardarPaquete()
+    {
+        // console.log(paquete);
+        if(paquete.length > 0)
+        {
+
+            $.ajax({
+                
+            url: "./controladores/importarpaquete.php",
+            data: { paqueteFilas: paquete },
+            type: "post",
+            
+            success: function (data) {
+                document.getElementById("registros").innerHTML = data + " registros importados";
+                // ajusteimportacion();
+                Swal.fire({
+                    title: 'Guardado',
+                    text: 'Se importaron ' + data + " registros !",
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                // console.log("Guardado");
+                });
+                
+            }
+            ,
+            error: function (e) {
+                console.log("Error en la consulta." + e.value);
+            }
+            });
+        }else{
+            Swal.fire({
+                title: 'Importación',
+                text: 'Debe seleccionar un archivo válido para importar',
+                icon: 'warning',
+                confirmButtonText : 'OK'
+
+            })
+
+        }
+        
+    }
+
+    
+
+    function armarfecha()
+    {
+        var f = new Date();
+        var mes = f.getMonth() + 1;
+        var dia = f.getDate();
+        if (dia < 10) {
+            dia = "0" + dia;
+        }
+        if (mes < 10) {
+            mes = "0" + mes;
+        }
+        var fechaactual = dia + "-" + mes + "-" + f.getFullYear();
+        
+        return conviertefechaastringdmy(fechaactual);
+    }
+
+    $(document).ready(function () {
+        cargarLista("opcionesimportacion");
+    });
+
+
+
+</script>

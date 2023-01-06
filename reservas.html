@@ -1,0 +1,856 @@
+<style>
+
+#subtitulo{
+    font-family: 'Charis SIL', serif;
+    color: #534c07;
+}
+
+#espera{
+    visibility: hidden;
+}
+
+
+
+#refrescar:hover{
+    background-color: #b3a845;
+}
+
+th{
+    font-family: 'Barlow', sans-serif;
+    color: #534c07;
+}
+
+/* Tooltip container */
+.tooltipbutton {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  height: 60px;
+  line-height: 60px;
+  background-color: rgb(49, 49, 49);
+  color: #fff;
+  text-align: center;
+  padding: 0px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipbutton:hover .tooltiptext {
+  visibility: visible;
+}
+
+#fechaconsulta, #fechareserva, #fechahastaconsulta{
+    line-height: 1.3em!important;
+    font-size: 1.2em!important;
+    margin: 0.5em;  
+}
+#divdatosfecha{
+margin: 0!important;
+}
+@media (min-device-width: 320px) and (max-device-width: 640px)
+{
+#fechaconsulta, #fechareserva, #fechahastaconsulta{line-height: 1.5em!important;font-size: 1.5em!important;margin: 0.5em;}
+}
+
+</style>
+
+<div id="divarriba" class="row pb-3">
+    <div class="col-sm-2" style="text-align: center;">
+        <img class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px" >   
+    </div>
+    <div class="col-sm-8">
+        <div class="d-flex justify-content-center">
+            <h4>Reservas</h4>
+        </div>
+        <div class="d-flex justify-content-center">
+            <p>Administre las reservas de los alumnos</p>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: right;">
+        <div class="tooltipbutton">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#formulariomodal" data-whatever="@getbootstrap" onclick="Agregar()"><span class="material-icons md-light md-48">add_circle</span> </a>
+            <span class="tooltiptext">Agregar reserva</span>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: center;">
+        <div class="tooltipbutton">
+            <button id="volver" type="button" class="btn btnmenu" onclick="Volver()"><span class="material-icons md-light md-48">undo</span> </a>
+            <span class="tooltiptext">Regresar al menú</span>
+        </button>
+        </div>
+    </div>
+</div>
+
+<div id="divformulario" class="d-flex justify-content-center container" >
+
+    <form class="row needs-validation" novalidate>
+      <div id="divdatosfecha" class="row  ">
+        <div class="col-sm-12 col-md-5 offset-md-1" style="text-align: center;">
+          <label for="fechaconsulta" style="font-size: 0.9em;">Desde</label>
+          <input type="date" id="fechaconsulta" name="fecha">
+        </div>
+        <div class="col-sm-12 col-md-5" style="text-align: center;">
+          <label for="fechahastaconsulta" style="font-size: 0.9em;">Hasta</label>
+          <input type="date" id="fechahastaconsulta" name="fechahasta">
+        </div>
+        <div class="col-sm-12 col-md-1" style="text-align: center;">
+            <button id="refrescar" onclick="ValidarCamposConsulta()" class="btn btn-success"><span class="material-symbols-outlined">refresh</span></button>
+        </div>
+      </div>
+    </form>
+</div>
+<div id="espera" class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="d-flex justify-content-center container" >
+    <p id="subtitulo"></p>
+</div>
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <table id="tabla" class="display table table-striped" style="width: 100%!important;">        
+            <thead><tr>
+                <th>id Reserva</th>
+                <th>Actividad</th>
+                <th>Día</th>
+                <th>Fecha Actividad</th>
+                <th>Hora de inicio</th> 
+                <th>Alumno</th>
+                <th>email</th>
+                <th>Marcar asistencia</th>
+                <th>Asistencia</th>
+                <th>Momento de asistencia</th>
+                <th>Momento de inscripción</th>
+                <th>Eliminar</th>
+            </tr></thead>
+            <tbody><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+          </table>
+    </div>
+    
+</div>
+ <!-- ------------------------------------------------- Modal --------------------------------------------------- -->
+ 
+<div class="modal fade" id="formulariomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reservas</h5>
+        <button type="button" class="close btn btnmenu" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div id="divdatosfecha" class="row justify-content-center" style="padding-bottom: 0.5em;">
+                <div class="col-sm-12 col-md-4 offset-md-4" style="text-align: center;">
+                    <label for="fechareserva"style="font-size: 0.9em;" >Fecha de Reserva</label>
+                    <input type="date" id="fechareserva" name="fechareserva">
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-check">
+                        <label class="form-check-label" for="turnosfijos">Usar Turnos fijos</label>
+                        <input type="checkbox" checked class="form-check-input" id="turnosfijos" >
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-md-4">
+                    <div id="contienelista"></div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div id="contieneturno"></div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div id="contienealumnos"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="id" class="col-form-label">Id Reserva:</label>
+                        <input type="text" class="form-control" id="id" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-5">  
+                    <div class="form-group">
+                        <label for="duracion" class="col-form-label">Duración:</label>
+                        <input type="text" disabled readonly class="form-control" id="duracion">
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                        <label for="horainicio"  class="col-form-label">Hora de inicio:</label>
+                        <input type="text" disabled class="form-control" id="horainicio">
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+    
+      <div class="modal-footer">
+        <button id="botonguardar" type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+        <button id="botoncerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ----------------------------------------------- Fin modal ------------------------------------------------- -->
+<script>
+
+arreglo = [];
+
+
+//Campos del formulario
+var ldid;
+
+var ldfechareserva;
+var ldfechaconsulta;
+var ldfechahastaconsulta;
+
+var ldduracion;
+var ldhorainicio;
+// var ldcomponenteespecialidad;
+var ldbotonguardar;
+var seleccionado = false;
+var ldaviso;
+var btnrefrescar;
+
+document.getElementById("fechaconsulta").addEventListener('input', Limpiar);
+document.getElementById("fechahastaconsulta").addEventListener('input', Limpiar);
+
+function ReconocerCampos(){
+    ldid = document.getElementById("id");
+
+    ldfechareserva = document.getElementById("fechareserva");
+
+    ldfechaconsulta = document.getElementById("fechaconsulta");
+    ldfechahastaconsulta = document.getElementById("fechahastaconsulta");
+
+    ldduracion = document.getElementById("duracion");
+    ldhorainicio = document.getElementById("horainicio");
+    ldbotonguardar = document.getElementById("botonguardar");
+    ldaviso =  document.getElementById("subtitulo");
+    btnrefrescar =  document.getElementById("refrescar");
+}
+
+function OcultarModal(){
+    document.getElementById("botoncerrar").click();
+}
+
+async function Agregar(){
+    $('#formulariomodal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
+    ColocaFechasModal();
+
+}
+
+function Volver(){
+    $("#bloqueprincipal").load("panelmenu.html?n="+version);
+}
+
+function DevuelveTextoActividad(){
+    compo = document.getElementById("componenteactividades");
+    let actividadseleccionada = compo.options[compo.selectedIndex];
+
+    return actividadseleccionada.text;
+}
+
+function DevuelveValorActividad(){
+    compo = document.getElementById("componenteactividades");
+    let actividadseleccionada = compo.options[compo.selectedIndex];
+
+    if(actividadseleccionada.value=='')
+    actividadseleccionada.value = 0;
+    return actividadseleccionada.value;
+}
+
+function DevuelveTextoTurno(){
+    compo = document.getElementById("componenteturnos");
+    let instructorseleccionado = compo.options[compo.selectedIndex];
+
+    return instructorseleccionado.text;
+}
+
+function DevuelveValorTurno(){
+    compo = document.getElementById("componenteturnos");
+    let instructorseleccionado = compo.options[compo.selectedIndex];
+
+    return instructorseleccionado.value;
+}
+
+function DevuelveTextoAlumno(){
+    compo = document.getElementById("componentealumnos");
+    let alumnoseleccionado = compo.options[compo.selectedIndex];
+
+    return alumnoseleccionado.text;
+}
+
+function DevuelveValorAlumno(){
+    compo = document.getElementById("componentealumnos");
+    let alumnoseleccionado = compo.options[compo.selectedIndex];
+
+    return alumnoseleccionado.value;
+}
+
+function ValidarCamposConsulta(){
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(ldaviso)
+        ldaviso.innerHTML = "";
+    
+    if(ldfechaconsulta.value == "" || ldfechahastaconsulta.value == "")
+        ldaviso.innerHTML = 'Se necesitan fechas de inicio y fin para la consulta!';
+    else if(ldfechaconsulta.value != "" && ldfechahastaconsulta.value != "")
+        Listar(true);
+
+
+}
+
+async function ColocaFechas(){
+    ldfechaconsulta.value = CreaFechaBDD(FechaActualddmmyyyy());
+    ldfechahastaconsulta.value = CreaFechaBDD(FechaActualddmmyyyy());
+    await Listar(true);
+}
+
+async function ColocaFechasModal(){
+    
+    ldfechareserva.value = CreaFechaBDD(FechaActualddmmyyyy());
+}
+
+function ValidarCampos(){
+    estado= true;
+
+    if((DevuelveTextoActividad() == "" || DevuelveValorActividad() == 0 ) && estado==true){
+        mensaje("Faltan datos","Falta ingresar la actividad","info","Ok");
+        estado=false;
+    }
+    if((DevuelveTextoTurno() == "" || DevuelveValorTurno() == 0 ) && estado==true){
+        mensaje("Faltan datos","Falta ingresar el turno","info","Ok");
+        estado=false;
+    }if((DevuelveTextoAlumno() == "" || DevuelveValorAlumno() == 0 ) && estado==true){
+        mensaje("Faltan datos","Falta ingresar el alumno","info","Ok");
+        estado=false;
+    }
+    if(ldhorainicio.value.trim() == "" && estado==true){
+        mensaje("Faltan datos","Falta ingresar la hora de inicio","info","Ok");
+        estado=false;
+    }
+
+    if(ldfechareserva.value == "" && estado==true)
+    {
+        mensaje("Faltan datos","Falta la Fecha de Reserva","info","Ok");
+        estado=false;
+    }
+    
+    return estado;
+}
+
+function Guardar()
+{
+
+    idreserva=ldid.value;
+    ldbotonguardar.disabled = true;
+    document.getElementById("espera").style.visibility = "visible";
+
+    idreserva=0;
+    tipo = "guardar";
+
+    if(ValidarCampos())
+    {
+        archivodeconsulta = 'abmreservas.php';
+
+        if(idreserva==""){
+            idreserva=0;
+            tipo = "guardar";
+        }else{
+            tipo = "modificar";
+        }
+        let datosconsulta = {tipo : tipo,idreserva:idreserva,idturno  : DevuelveValorTurno(),idactividad : DevuelveValorActividad(),fechaactividad:ldfechareserva.value,horainicio:ldhorainicio.value,idalumno:DevuelveValorAlumno()}
+    
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+            .then(response =>{
+                if(response.statusText == 'OK')
+                {
+                }
+                return response.json();
+            }).then(data => {
+                ldbotonguardar.disabled = false;
+
+                if(data >= 1){
+
+                    Limpiar();
+                    Listar(false);
+                    OcultarModal();
+                }
+            })
+            .catch(function (error){ console.log(error); });
+    }else{
+        ldbotonguardar.disabled = false;
+        document.getElementById("espera").style.visibility = "hidden";
+    }
+}
+
+function Listar(debemoverse)
+{
+    document.getElementById("espera").style.visibility = "visible";
+
+    arreglo= [];
+    archivodeconsulta = 'consultareservas.php';
+    
+    id=ldid.value;
+    
+    if(id=="")
+        tipoconsulta = "consultaxfechas";
+    else
+        tipoconsulta = "consulta";
+
+    if(id=="")id=0;
+
+    let datosconsulta = {tipo : tipoconsulta,fechadesde:ldfechaconsulta.value,fechahasta:ldfechahastaconsulta.value,idalumno  : '',idturno:0}
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response => {
+        if(response.status == 200)
+        {
+            // console.log(JSON.stringify(response));
+        }
+        return response.json();
+    })
+    .then(data => 
+    {
+
+        let cantidad =  data.length;
+        if(cantidad>0)
+        {
+            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+            {
+                toPropuestas = new Object();
+                toPropuestas.idreserva = data[a].idreserva;
+                toPropuestas.idturno = data[a].idturno;
+                
+                toPropuestas.idactividad = data[a].idactividad;
+                toPropuestas.actividad = data[a].actividad;
+                toPropuestas.fechaactividad = data[a].fechaactividad
+
+                toPropuestas.duracion = data[a].duracion;
+                toPropuestas.horainicio = data[a].horainicio;
+
+                toPropuestas.idalumno = data[a].idalumno;
+                toPropuestas.apellido = data[a].apellido;
+                toPropuestas.nombre = data[a].nombre;
+                toPropuestas.email = data[a].email;
+
+                toPropuestas.asistio = data[a].asistio;
+                toPropuestas.fechainscribio = data[a].fechainscribio;
+                toPropuestas.fechamarcacion = data[a].fechamarcacion;
+                
+                arreglo.push(toPropuestas);
+            }
+
+        }
+        llenartabla(debemoverse);
+    })
+    .catch(function(error){console.log(error);});
+}
+
+function llenartabla(debemoverse)
+{
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+
+    tabla.clear().draw();
+    
+    
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+        if(arreglo[a].asistio==1){
+            asistencia = 'Presente';
+            botonAsistencia ="<button id='Asistencia" + arreglo[a].idreserva + "' class='btn btn-success btn-sm prebutton Presente' type='button' onclick='DeseaAsistencia(\"" + arreglo[a].idreserva+"\",\"" + arreglo[a].asistio +"\")'><span class='material-symbols-outlined '>handshake</span></button>";
+            botonEliminar = "<button id='Eli" + arreglo[a].idreserva + "' class='btn btn-secondary btn-sm elibutton' type='button' onclick='AvisoNoElimina()'><span class='material-symbols-outlined '>delete</span></button>";
+
+        }else{
+            asistencia='Ausente';
+            botonAsistencia = "<button id='Asistencia" + arreglo[a].idreserva + "' class='btn btn-primary btn-sm prebutton Ausente' type='button' onclick='DeseaAsistencia(\"" + arreglo[a].idreserva+"\",\"" + arreglo[a].asistio +"\")'><span class='material-symbols-outlined '>front_hand</span></button>";
+            botonEliminar = "<button id='Eli" + arreglo[a].idreserva + "' class='btn btn-success btn-sm btnmenu elibutton' type='button' onclick='DeseaEliminar(\"" + arreglo[a].idreserva+"\")'><span class='material-symbols-outlined '>delete</span></button>";
+        }
+        
+        nombreyapellido = arreglo[a].nombre + ' ' + arreglo[a].apellido;
+        tilde = "<div class='d-flex justify-content-center'><div class='form-check'><input id="+arreglo[a].idturno+" class='form-check-input chturno' type='checkbox' value='' ></div>";
+        
+        if(arreglo[a].fechamarcacion=='0000-00-00 00:00:00')
+            fechamarcacion = '';
+        else
+            fechamarcacion = conviertefechahispanayhora(arreglo[a].fechamarcacion);
+
+        fechainscribio = conviertefechahispanayhora(arreglo[a].fechainscribio);
+        fechaactividad = conviertefechahispana(arreglo[a].fechaactividad);
+        
+        tabla.row.add([
+
+            "<p>" + arreglo[a].idreserva + "</p>" , 
+            arreglo[a].actividad,
+            DiaSemanaYMD(arreglo[a].fechaactividad).diatexto,
+            fechaactividad,
+            arreglo[a].horainicio,
+            nombreyapellido,
+            arreglo[a].email,
+            botonAsistencia,
+            asistencia,
+            fechamarcacion,
+            fechainscribio,
+            botonEliminar
+        ]).draw(false);
+
+    }
+    document.getElementById("espera").style.visibility = "hidden";
+
+    if(debemoverse)
+    mover(tabla);
+   
+}
+
+function AvisoNoElimina(){
+    Swal.fire({
+    title: 'Bloqueado',
+    text: "Los turnos de alumnos presentes no se pueden eliminar!",
+    icon: 'info',
+    })
+}
+
+function mover(tabla){
+    tabla.columns.adjust().draw()
+    ira(500,"divarriba");
+  }
+
+function DeseaEliminar(idpasado){
+    
+    Swal.fire({
+    title: 'Seguro desea eliminar?',
+    text: "Esto no podrá revertirse!",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Eliminar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Eliminar(idpasado);
+        }
+    })
+    
+}
+
+function DeseaAsistencia(idpasado,asistio){
+    if(asistio==1)
+        textotitulo = "¿ Poner Ausente ?"
+    else
+        textotitulo = "¿ Poner Presente ?"
+
+    Swal.fire({
+    title: textotitulo,
+    text: "Puede revertir volviendo a presionar!",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Confirmar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Asistencia(idpasado);
+        }
+    })
+    
+}
+
+function Asistencia(valor)
+{
+    boton = document.getElementById("Asistencia"+valor);
+    boton.disabled = true;
+
+    document.getElementById("espera").style.visibility = "visible";
+    ponerasistencia=-1;
+
+    if (boton.classList.contains( 'Presente' ))
+    {
+        ponerasistencia=0;
+        contrario = 1;
+        boton.classList.replace( 'Presente', 'Ausente' );
+    }else
+    {
+        ponerasistencia=1;
+        contrario = 0;
+        boton.classList.replace( 'Ausente' ,'Presente' );
+    }
+
+    for(a=0;a<arreglo.length;a++)
+    {
+      if(arreglo[a].idreserva == valor)
+      {
+          interes = new Object();
+          interes.idreserva       = arreglo[a].idreserva;
+          interes.asistio         = ponerasistencia;
+
+          arreglo[a].asistio = ponerasistencia;
+          arreglo[a].fechamarcacion='0000-00-00 00:00:00';
+      }
+    }
+
+    document.getElementById("espera").style.visibility = "visible";
+
+    fetch("./controladores/guardarasistencia.php?n="+ version,{method:'POST',body: JSON.stringify( interes ),headers:{'Content-Type':'application/json'}})
+    .then(response =>{
+    if(response.statusText == 'OK')
+    {
+
+    }
+    return response.json();
+    })
+    .then(data=>{
+
+    if(data>=1)
+    {
+        document.getElementById("espera").style.visibility = "hidden";
+        document.getElementById("Asistencia"+valor).disabled = false;
+        Listar(false);
+    }
+    })
+    .catch(function (error){
+        console.log(error);
+    });
+    
+}
+
+function Eliminar(idpasado){
+
+    archivodeconsulta = 'abmreservas.php';
+    tipo = "eliminar";
+
+    let datosconsulta = {tipo : tipo,idreserva  : idpasado,idactividad : '',idturno:'',fechaactividad:'',horainicio:'',idalumno:''}
+    
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{
+        
+        if(response.statusText == 'OK')
+        {
+        }
+        return response.json();
+    })
+    .then(data=>{
+        if(data == 1)
+        {
+            Limpiar();
+            Listar(false);
+            
+            mensaje("Eliminado","La reserva fué eliminada correctamente.","success","Ok");
+            
+            OcultarModal();
+            botoneseliminar = document.getElementsByClassName("elibutton");
+            botoneseliminar.forEach(HabilitarBotonesEliminar());
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+function Limpiar(){
+    
+    ldid.value = "";
+    ldduracion.value = "";
+    ldhorainicio.value = "";
+    ldfechareserva.value = "";
+
+    ldbotonguardar.disabled = false;
+
+    document.getElementById("espera").style.visibility = "hidden";
+
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+
+    tabla.clear().draw();
+}
+
+async function Configuratabla() 
+{
+    $('#tabla').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 10,
+        "columnDefs": [
+        { "width": "10%", "targets": 0 },{ "width": "15%", "targets": 1 },
+        { "width": "10%", "targets": 2 },{ "width": "10%", "targets": 3 },
+        { "width": "10%", "targets": 4 },{ "width": "15%", "targets": 5 },
+        { "width": "15%", "targets": 6 },{ "width": "15%", "targets": 7 },
+  
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+            },
+            {
+            extend: 'print',
+            text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+            },
+        ],
+    });
+
+}
+
+async function CargarListaActividades(){
+    $("#contienelista").load("componenteactividades.html?n="+version);
+}
+
+async function CargarListaTurnos(){
+
+    $("#contieneturno").load("componenteturnos.html?n="+version);
+}
+
+async function CargarListaAlumnos(){
+   
+        $("#contienealumnos").load("componentealumnos.html?n="+version);
+}
+
+
+document.getElementById("turnosfijos").addEventListener("change",ListaTurnoXfecha,false);
+document.getElementById("fechareserva").addEventListener("change",ListaTurnoXfecha,false);
+
+function ListaTurnoXfecha(){
+    const turnosf = document.getElementById('turnosfijos');
+    if(turnosf.checked){
+
+        ListarItinerarioxDia();
+    }
+    else
+        listaTurnos("componenteturnos",ldfechareserva.value,DevuelveValorActividad());
+}
+
+    
+
+function ListarItinerarioxDia(){
+
+arreglo= [];
+arregloTurnos=[];
+
+archivodeconsulta = 'consultaitinerario.php';
+tipoconsulta = "consultaxdiayactividad";
+
+diadelasemana = DiaSemanaYMD(ldfechareserva.value);
+acti = DevuelveValorActividad();
+acti == '' ? acti = 0 : false;
+
+let datosconsulta = {tipo : tipoconsulta,idturno  : 0,idactividad:acti,dia:diadelasemana.diatexto}
+
+fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+.then(response => response.json())
+.then(data => 
+{
+    let cantidad =  data.length;
+    if(data[0]!='desconocido')
+    {
+        if(cantidad>0)
+        {
+            for(let a = 0 ;a<cantidad;a++) //llenar la Listar
+            {
+                toPropuestas = new Object();
+                toPropuestas.idturno = data[a].idturno;
+                toPropuestas.idactividad = data[a].idactividad;
+                toPropuestas.actividad = data[a].actividad;
+                toPropuestas.dia = data[a].dia
+                toPropuestas.duracion = data[a].duracion;
+                toPropuestas.horainicio = data[a].horainicio;
+                toPropuestas.idinstructor = data[a].idinstructor;
+                toPropuestas.instructor = data[a].instructor;
+                
+                arreglo.push(toPropuestas);
+                arregloTurnos.push(toPropuestas);
+            }
+
+            arregloopcion = [];
+            $('#componenteturnos').empty(); //limpiar la lista
+            arregloopcion.push('<option value = "" selected;">Seleccione un turno</option>'); //primer item de la lista
+
+            if(arreglo.length > 0){
+                for(let b = 0 ;b<arreglo.length;b++) //llenar la Listar
+                {
+                    arregloopcion = arregloopcion.concat('<option value = ' + arreglo[b].idturno + ' > ' + arreglo[b].horainicio + '</option>');
+                }
+                
+                $('#componenteturnos' ).append(arregloopcion); //lleno la lista con las opciones traidas de la base de datos
+                $('#componenteturnos'+ ' option:selected').prop('selected',false); //deselecciona el primer item
+                $('#componenteturnos').prop('selected',true); //selecciona el primer item de la lista
+            }
+        }
+        else{
+            arregloopcion = [];
+            $('#componenteturnos').empty(); //limpiar la lista
+            arregloopcion.push('<option value = "" selected;">Seleccione un turno</option>'); //primer item de la lista
+            $('#componenteturnos' ).append(arregloopcion); //lleno la lista con las opciones traidas de la base de datos
+        }
+    }else
+    {
+        arregloopcion = [];
+        $('#componenteturnos').empty(); //limpiar la lista
+        arregloopcion.push('<option value = "" selected;">Seleccione un turno</option>'); //primer item de la lista
+        $('#componenteturnos' ).append(arregloopcion); //lleno la lista con las opciones traidas de la base de datos
+    }
+})
+.catch(function(error){console.log(error);});
+
+}
+
+
+
+$(document).ready(function(){
+    ReconocerCampos();
+    Configuratabla();
+    
+    ColocaFechas();
+    ColocaFechasModal();
+
+    CargarListaActividades();
+    CargarListaAlumnos();
+    CargarListaTurnos();
+});
+
+</script>

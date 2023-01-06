@@ -1,0 +1,1213 @@
+<style>
+
+#subtitulo{
+    font-family: 'Charis SIL', serif;
+    color: #534c07;
+}
+
+#espera{
+    visibility: hidden;
+}
+
+th{
+    font-family: 'Barlow', sans-serif;
+    color: #534c07;
+}
+
+/* Tooltip container */
+.tooltipbutton {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  height: 60px;
+  line-height: 60px;
+  background-color: rgb(49, 49, 49);
+  color: #fff;
+  text-align: center;
+  padding: 0px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipbutton:hover .tooltiptext {
+  visibility: visible;
+}
+
+#fechaconsulta, #fechaturno, #fechahastaconsulta, #fechaturnohasta{
+    line-height: 1.3em!important;
+    font-size: 1.2em!important;
+}
+#divdatosfecha, #divdatosfechaconsulta{
+margin: 0!important;
+}
+@media (min-device-width: 320px) and (max-device-width: 640px)
+{
+#fechaconsulta, #fechaturno, #fechahastaconsulta, #fechaturnohasta{line-height: 1.55em!important;font-size: 1.55em!important;margin: 0.5em;}
+}
+
+
+.separa{
+    margin: 0.5em;
+}
+</style>
+
+<div id="divarriba" class="row pb-3">
+    <div class="col-sm-2" style="text-align: center;">
+        <img class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px" >   
+    </div>
+    <div class="col-sm-8">
+        <div class="d-flex justify-content-center">
+            <h4>Turnos</h4>
+        </div>
+        <div class="d-flex justify-content-center">
+            <p>Cree turnos disponibles entre fechas</p>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: right;">
+        <div class="tooltipbutton">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#formulariomodal" data-whatever="@getbootstrap" onclick="Agregar()"><span class="material-icons md-light md-48">add_circle</span> </a>
+            <span class="tooltiptext">Agregar turno</span>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: center;">
+        <div class="tooltipbutton">
+            <button id="volver" type="button" class="btn btnmenu" onclick="Volver()"><span class="material-icons md-light md-48">undo</span> </a>
+            <span class="tooltiptext">Regresar al menú</span>
+        </button>
+        </div>
+    </div>
+</div>
+
+<div id="divformulario">
+
+    <form class="row needs-validation" novalidate>
+        <div id="divdatosfechaconsulta">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 offset-md-4" style="text-align: center;">
+                    <input type="date" id="fechaconsulta" name="fecha">
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <a id="listaturnos" onclick="Listar()" class="btn btn-success" ><span class="material-symbols-outlined">refresh</span></a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="d-flex justify-content-center container" >
+    <p id="subtitulo"></p>
+</div>
+<div id="espera" class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <table id="tabla" class="display table table-striped" style="width: 100%!important;">        
+            <thead><tr>
+                <th>id</th>
+                <th>Duración</th>
+                <th>Instructor</th>
+                <th>Actividad</th>
+                <th>Día</th> 
+                <th>Fecha</th> 
+                <th>Hora de inicio</th>
+                <th>Check</th>
+                <th>Eliminar</th>
+            </tr></thead>
+            <tbody><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+          </table>
+    </div>
+    
+</div>
+<hr style="border-color: red;border: 1em;">
+<div class="container">
+
+    <div class="d-flex justify-content-end">
+        <div class="form-check">
+            <label class="form-check-label" for="eliminarengrupo">Todos los items </label>
+            <button onclick="MarcarBotonesEliminar()" class="btn btn-danger">Seleccionar</button>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <div class="form-check">
+            <label class="form-check-label" for="eliminarengrupo">
+                Items seleccionados 
+            </label>
+            <button id="eliminarengrupo" onclick="DeseaEliminarGrupalmente()" class="btn btn-danger">Eliminar</button>
+        </div>
+    </div>
+    
+</div>
+
+ <!-- ------------------------------------------------- Modal --------------------------------------------------- -->
+ 
+<div class="modal fade" id="formulariomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Turnos</h5>
+        <button type="button" class="close btn btnmenu" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div id="divdatosfecha" class="row d-flex justify-content-center" style="padding-bottom: 0.5em;">
+                <div class="col-sm-12 col-md-4" style="text-align: center;">
+                    <label for="fechaturno" style="font-size: 0.9em;">Turno Desde</label>
+                    <input type="date" id="fechaturno" name="fechaturno">
+                </div>
+                <div class="col-sm-12 col-md-4" style="text-align: center;">
+                    <label for="fechaturnohasta"style="font-size: 0.9em;" >Turno Hasta</label>
+                    <input type="date" id="fechaturnohasta" name="fechaturnohasta">
+                </div>
+            </div>
+            <!-- ----------------------------------------------------------------------------------------------------- -->
+
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-md-4">
+                    <div id="contienelista"></div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div id="contieneInstructores"></div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="idturno" class="col-form-label">Id turno:</label>
+                        <input type="text" class="form-control" id="idturno" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-4">  
+                    <div class="form-group">
+                        <label for="duracion" class="col-form-label">Duración del turno:</label>
+                        <input type="text" disabled readonly class="form-control" id="duracion">
+                    </div>
+                </div>
+                <!-- <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                        <label for="horainicio" class="col-form-label">Hora de inicio:</label>
+                        <input type="text" class="form-control" id="horainicio">
+                    </div>
+                </div> -->
+            </div>
+            <hr>
+            <div class="d-flex justify-content-center">
+                <h5>Rutinas</h5>
+            </div>
+                <div class="d-flex justify-content-center">
+                <p>Establezca días y horas para esta actividad e instructor</p>
+            </div>
+            <!-- ----------------------------------- Dias de la semana ----------------------------------------------- -->
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('lunes')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('lunes')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="lunes">Lu</label>
+                    <input type="checkbox" class="form-check-input" id="lunes" disabled>
+                </div>
+                
+                <div id="horaslunes"></div>
+            
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('martes')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('martes')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="martes">Ma</label>
+                    <input type="checkbox" class="form-check-input" id="martes" disabled>
+                </div>
+                <div id="horasmartes"></div>
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('miercoles')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('miercoles')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="miercoles">Mi</label>
+                    <input type="checkbox" class="form-check-input" id="miercoles" disabled>
+                </div>
+                <div id="horasmiercoles"></div>
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('jueves')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('jueves')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="jueves">Ju</label>
+                    <input type="checkbox" class="form-check-input" id="jueves" disabled>
+                </div>
+                <div id="horasjueves"></div>
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('viernes')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('viernes')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="viernes">Vi</label>
+                    <input type="checkbox" class="form-check-input" id="viernes" disabled>
+                </div>
+                <div id="horasviernes"></div>
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('sabado')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('sabado')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="sabado">Sa</label>
+                    <input type="checkbox" class="form-check-input" id="sabado" disabled>
+                </div>
+                <div id="horassabado"></div>
+            </div>
+            <div class="d-flex justify-content-left">
+                <button onclick="AgregarHora('domingo')" class="btn btn-primary separa"><span class="material-icons md-light md-48">add_circle</span></button>
+                <button onclick="EliminaHora('domingo')" class="btn btn-danger separa"><span class="material-icons md-light md-48">delete</span></button>
+                <div class="form-check">
+                    <label class="form-check-label" for="domingo">Do</label>
+                    <input type="checkbox" class="form-check-input" id="domingo" disabled>
+                </div>
+                <div id="horasdomingo"></div>
+            </div>
+            
+        </form>
+      </div>
+    <div id="espera" class="d-flex justify-content-center">
+        <div class="spinner-border text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+      <div class="modal-footer">
+        <button id="botonguardar" type="button" class="btn btn-success" onclick="DeseaGuardar()">Guardar</button>
+        <button id="botoncerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ----------------------------------------------- Fin modal ------------------------------------------------- -->
+<script>
+
+arreglo = [];
+
+//Campos del formulario
+var ldid;
+
+var ldfechaturno;
+var ldfechaturnohasta;
+var ldfechaconsulta;
+
+var ldduracion;
+var ldhorainicio;
+// var ldcomponenteespecialidad;
+var ldbotonguardar;
+var seleccionado = false;
+var ldaviso;
+
+var ldlunes;
+var ldmartes;
+var ldmiercoles;
+var ldjueves;
+var ldviernes;
+var ldsabado;
+var lddomingo;
+
+document.getElementById("fechaconsulta").addEventListener('input', Limpiar);
+
+var cantlunes       =   0;
+var cantmartes      =   0;
+var cantmiercoles   =   0;
+var cantjueves      =   0;
+var cantviernes     =   0;
+var cantsabado      =   0;
+var cantdomingo     =   0;
+
+function AgregarHora(dia)
+{
+    event.preventDefault();
+    if(dia=='lunes') {
+        ldlunes.checked = true;
+        cantlunes+=1;
+    }   
+    if(dia=='martes'){
+        ldmartes.checked = true;
+        cantmartes+=1;
+    }   
+    if(dia=='miercoles') {
+        ldmiercoles.checked = true;
+        cantmiercoles+=1;
+    }
+    if(dia=='jueves'){
+        ldjueves.checked = true;
+        cantjueves+=1;
+    }   
+    if(dia=='viernes'){
+        ldviernes.checked = true;
+        cantviernes+=1;
+    }  
+    if(dia=='sabado'){
+        ldsabado.checked = true;
+        cantsabado+=1;
+    }  
+    if(dia=='domingo')  
+    {
+        lddomingo.checked = true;
+        cantdomingo+=1;
+    }
+    
+    objhora = document.createElement("input");
+    objhora.type = "time";
+
+    if(dia=='lunes')    objhora.id = dia+cantlunes;
+    if(dia=='martes')   objhora.id = dia+cantmartes;
+    if(dia=='miercoles')objhora.id = dia+cantmiercoles;
+    if(dia=='jueves')   objhora.id = dia+cantjueves;
+    if(dia=='viernes')  objhora.id = dia+cantviernes;;
+    if(dia=='sabado')   objhora.id = dia+cantsabado;
+    if(dia=='domingo')  objhora.id = dia+cantdomingo;
+
+    document.getElementById("horas"+dia).appendChild(objhora);
+}
+
+function EliminaHora(dia)
+{
+    event.preventDefault();
+
+    if(dia=='lunes'){
+        diaaborrar = document.getElementById(dia+cantlunes);
+        if(cantlunes>0)
+            cantlunes-=1;
+        
+        if(cantlunes<=0)
+            ldlunes.checked = false;
+    }
+    if(dia=='martes'){
+        diaaborrar = document.getElementById(dia+cantmartes);
+        if(cantmartes>0)
+            cantmartes-=1;
+        if(cantmartes<=0)
+            ldmartes.checked = false;
+    }
+    if(dia=='miercoles'){
+        diaaborrar = document.getElementById(dia+cantmiercoles);
+        if(cantmiercoles>0)
+            cantmiercoles-=1;
+        if(cantmiercoles<=0)
+            ldmiercoles.checked = false;
+    }
+    if(dia=='jueves'){
+        diaaborrar = document.getElementById(dia+cantjueves);
+        if(cantjueves>0)
+            cantjueves-=1;
+        if(cantjueves<=0)
+            ldjueves.checked = false;
+    }
+    if(dia=='viernes'){
+        diaaborrar = document.getElementById(dia+cantviernes);
+        if(cantviernes>0)
+            cantviernes-=1;}
+        if(cantviernes<=0)
+            ldviernes.checked = false;
+        
+    if(dia=='sabado'){
+        diaaborrar = document.getElementById(dia+cantsabado);
+        if(cantsabado>0)
+            cantsabado-=1;
+        if(cantsabado<=0)
+            ldsabado.checked = false;
+    }
+    if(dia=='domingo'){
+        diaaborrar = document.getElementById(dia+cantdomingo);
+        if(cantdomingo>0)
+            cantdomingo-=1;
+        if(cantdomingo<=0)
+            lddomingo.checked = false;
+    }
+    
+    if(diaaborrar)
+    diaaborrar.remove();
+    
+}
+
+function ReconocerCampos(){
+    ldid = document.getElementById("idturno");
+
+    ldfechaturno = document.getElementById("fechaturno");
+    ldfechaturnohasta = document.getElementById("fechaturnohasta");
+
+    ldfechaconsulta = document.getElementById("fechaconsulta");
+
+    ldduracion = document.getElementById("duracion");
+    // ldhorainicio = document.getElementById("horainicio");
+    // ldcomponenteespecialidad = document.getElementById("componenteespecialidad");
+    ldbotonguardar = document.getElementById("botonguardar");
+    ldaviso =  document.getElementById("subtitulo");
+
+    ldlunes     =  document.getElementById("lunes");
+    ldmartes    =  document.getElementById("martes");
+    ldmiercoles =  document.getElementById("miercoles");
+    ldjueves    =  document.getElementById("jueves");
+    ldviernes   =  document.getElementById("viernes");
+    ldsabado    =  document.getElementById("sabado");
+    lddomingo   =  document.getElementById("domingo");
+}
+
+function OcultarModal(){
+    document.getElementById("botoncerrar").click();
+}
+
+function Agregar(){
+
+    ldfechaturnohasta.disabled = false;
+    Limpiar();
+    ColocaFechasModal();
+    $('#formulariomodal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
+}
+
+function Volver(){
+    $("#bloqueprincipal").load("panelmenu.html?n="+version);
+}
+
+function DevuelveTextoActividad(){
+    compo = document.getElementById("componenteactividades");
+    let actividadseleccionada = compo.options[compo.selectedIndex];
+
+    return actividadseleccionada.text;
+}
+
+function DevuelveValorActividad(){
+    compo = document.getElementById("componenteactividades");
+    let actividadseleccionada = compo.options[compo.selectedIndex];
+
+    return actividadseleccionada.value;
+}
+
+function DevuelveTextoInstructor(){
+    compo = document.getElementById("componenteinstructores");
+    let instructorseleccionado = compo.options[compo.selectedIndex];
+
+    return instructorseleccionado.text;
+}
+
+function DevuelveValorInstructor(){
+    compo = document.getElementById("componenteinstructores");
+    let instructorseleccionado = compo.options[compo.selectedIndex];
+
+    return instructorseleccionado.value;
+}
+
+function ValidarCamposConsulta(){
+
+    // event.preventDefault();
+    // event.stopPropagation();
+
+    if(ldaviso)
+        ldaviso.innerHTML = "";
+    
+    if(ldfechaconsulta.value == "" )
+    {
+        ldaviso.innerHTML = 'Indique una fecha para la consulta!';
+        return false;
+
+    }else{
+
+        return true;
+    }
+
+}
+
+async function ColocaFechas(){
+    ldfechaconsulta.value = CreaFechaBDD(FechaActualddmmyyyy());
+
+    await Listar();
+}
+
+async function ColocaFechasModal(){
+    ldfechaturno.value = CreaFechaBDD(FechaActualddmmyyyy());
+    ldfechaturnohasta.value = CreaFechaBDD(FechaActualddmmyyyy());
+}
+
+function ValidarCampos(){
+    estado= true;
+
+    if(DevuelveTextoActividad() == "" || DevuelveValorActividad() == 0){
+        mensaje("Faltan datos","Falta ingresar la actividad","info","Ok");
+        estado=false;
+    }
+    if(DevuelveTextoInstructor() == "" || DevuelveValorInstructor() == 0){
+        mensaje("Faltan datos","Falta ingresar el instructor","info","Ok");
+        estado=false;
+    }
+    // if(ldhorainicio.value.trim() == "" && estado==true){
+    //     mensaje("Faltan datos","Falta ingresar la hora de inicio","info","Ok");
+    //     estado=false;
+    // }
+    
+
+    if(ldfechaturno.value == "" && estado==true)
+    {
+        mensaje("Faltan datos","Falta la fecha Turno Desde","info","Ok");
+        estado=false;
+    }
+    
+    if(ldid.value =="")
+    {
+
+        if(ldfechaturnohasta.value == "" && estado==true)
+        {
+            mensaje("Faltan datos","Falta la fecha Turno Hasta","info","Ok");
+            estado=false;
+        }
+        
+        if(ldfechaturnohasta.value < ldfechaturno.value && estado==true)
+        {
+            mensaje("Fechas incorrectas","La fecha final debe ser mayor a la fecha Inicial","info","Ok");
+            estado=false;
+        }
+    }
+
+
+    return estado;
+}
+
+
+function RecopilaHoras(dia,ordenhora)
+{
+    event.preventDefault();
+
+    if(dia=='Lunes'){
+        hora = document.getElementById("lunes"      +ordenhora);
+    }
+    if(dia=='Martes'){
+        hora = document.getElementById("martes"     +ordenhora);
+    }
+    if(dia=='Miércoles'){
+        hora = document.getElementById("miercoles"  +ordenhora);
+    }
+    if(dia=='Jueves'){
+        hora = document.getElementById("jueves"     +ordenhora);
+    }
+    if(dia=='Viernes'){
+        hora = document.getElementById("viernes"    +ordenhora);
+    }
+    if(dia=='Sábado'){
+        hora = document.getElementById("sabado"     +ordenhora);
+    }
+    if(dia=='Domingo'){
+        hora = document.getElementById("domingo"    +ordenhora);
+    }
+
+    if(hora.value == '')
+        mensaje("Día " +dia,"Debe corregir una de las horas","error","Ok");
+    
+    return hora.value;
+}
+
+function DeseaGuardar(){
+    Swal.fire({
+    title: 'Guardar?',
+    text: "Confirme el guardado por favor!",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: 'green',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Guardar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Guardar();
+        }
+    })
+}
+
+function Guardar(){
+
+    idturno=ldid.value;
+    ldbotonguardar.disabled = true;
+    document.getElementById("espera").style.visibility = "visible";
+
+    if(idturno=="")
+    {
+        idturno=0;
+        tipo = "guardar";
+
+        if(ValidarCampos())
+        {
+            archivodeconsulta = 'abmturnosguardar.php';
+
+            paquete = [];
+            arregloFechas = [];
+            
+            //suma 1 porque calcula dias completos como entero
+                cantidadDias = DiasEntreFechas(ldfechaturno.value,ldfechaturnohasta.value) + 1; 
+
+            for(a=0 ;a < cantidadDias;a++)
+            {
+                fechaagregada = SumarDiasAfecha(ldfechaturno.value,a,'ymd');
+                arregloFechas.push(fechaagregada);
+            }
+
+            horasvalidas = true;
+            for(a=0 ;a < arregloFechas.length;a++)
+            {
+                cantidad = 0;
+                dialistado = DiaSemanaYMD(arregloFechas[a]).diatexto;
+
+                if(dialistado == "Lunes")
+                    cantidad = cantlunes;
+                if(dialistado == "Martes")
+                    cantidad = cantmartes;
+                if(dialistado == "Miércoles")
+                    cantidad = cantmiercoles;
+                if(dialistado == "Jueves")
+                    cantidad =  cantjueves;
+                if(dialistado == "Viernes")
+                    cantidad = cantviernes;
+                if(dialistado == "Sábado")
+                    cantidad = cantsabado;
+                if(dialistado == "Domingo")
+                    cantidad = cantdomingo;
+
+                for(conta=1;conta<=cantidad;conta++)
+                {    
+                    var items = new Object();
+                    items.tipo= tipo,
+                    items.idturno= idturno,
+                    items.idactividad= DevuelveValorActividad(),
+                    items.fecha= arregloFechas[a],
+                    items.duracion= ldduracion.value,
+                    items.idinstructor= DevuelveValorInstructor();
+
+                    horadevuelta = RecopilaHoras(dialistado,conta);paquete.push(items); 
+                    if(horadevuelta!='')
+                        items.horainicio =horadevuelta; 
+                    else
+                        horasvalidas = false;
+                }
+            }
+
+            paqueteJson =JSON.stringify( paquete );
+
+            if(horasvalidas)
+            {
+                fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: paqueteJson,headers:{'Content-Type':'application/json'}})   
+                .then(response =>{
+                    if(response.statusText == 'OK')
+                    {
+                    }
+                    return response.json();
+                }).then(data => {
+                    ldbotonguardar.disabled = false;
+
+                    if(data >= 1){
+
+                        OcultarModal();
+                        Limpiar();
+                        Listar();
+                    }else{
+                        mensaje('Atención','Verifique la validez de fechas y horas','warning','Ok')
+                    }
+                })
+                .catch(function (error){ console.log(error); });
+            }else{
+                ldbotonguardar.disabled = false;
+                document.getElementById("espera").style.visibility = "hidden";
+                mensaje('Atención','Verifique las horas para las actividades','Info','Ok')
+            }
+        }else{
+            ldbotonguardar.disabled = false;
+            document.getElementById("espera").style.visibility = "hidden";
+
+        }
+    }else
+    {
+        Modificar();
+    }
+}
+
+function Modificar(){
+
+    if(ValidarCampos())
+    {
+        archivodeconsulta = 'abmturnos.php';
+        idturno=ldid.value;
+
+        tipo = "modificar";
+
+        let datosconsulta = {tipo : tipo,idturno  : idturno,idactividad : DevuelveValorActividad(),fecha:ldfechaturno.value,duracion:ldduracion.value,horainicio:ldhorainicio.value,idinstructor:DevuelveValorInstructor()}
+
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+        .then(response =>{
+            if(response.statusText == 'OK')
+            {
+            }
+            return response.json();
+        }).then(data => {
+            ldbotonguardar.disabled = true;
+
+            if(data >= 1){
+
+                OcultarModal();
+                Limpiar();
+                Listar();
+            }
+        })
+        .catch(function (error){ console.log(error); });
+    }else{
+        document.getElementById("espera").style.visibility = "hidden";
+
+        ldbotonguardar.disabled = false;
+
+    }
+
+}
+
+function Listar()
+{
+
+    if(   ValidarCamposConsulta() ){
+
+
+        document.getElementById("espera").style.visibility = "visible";
+
+        arreglo= [];
+        archivodeconsulta = 'consultaturnos.php';
+        
+        id=ldid.value;
+        
+        if(id=="")
+            tipoconsulta = "consultaxfecha";
+        else
+            tipoconsulta = "consulta";
+
+        if(id=="")id=0;
+
+        let datosconsulta = {tipo : tipoconsulta,idturno  : id,fecha:ldfechaconsulta.value,fechahasta:ldfechaconsulta.value,idactividad:0}
+
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+        .then(response => response.json())
+        .then(data => 
+        {
+            let cantidad =  data.length;
+            if(data[0]!='desconocido')
+            {
+                if(cantidad>0)
+                {
+                    for(let a = 0 ;a<cantidad;a++) //llenar la Listar
+                    {
+                        toPropuestas = new Object();
+                        toPropuestas.idturno = data[a].idturno;
+                        toPropuestas.idactividad = data[a].idactividad;
+                        toPropuestas.actividad = data[a].actividad;
+                        toPropuestas.fecha = data[a].fecha
+                        toPropuestas.duracion = data[a].duracion;
+                        toPropuestas.horainicio = data[a].horainicio;
+                        toPropuestas.idinstructor = data[a].idinstructor;
+                        toPropuestas.instructor = data[a].instructor;
+                        
+                        arreglo.push(toPropuestas);
+                    }
+
+                }
+            }
+            llenartabla();
+        })
+        .catch(function(error){console.log(error);});
+
+    }
+
+}
+
+function llenartabla()
+{
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+
+    tabla.clear().draw();
+    
+
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+        tilde = "<div class='d-flex justify-content-center'><div class='form-check'><input id="+arreglo[a].idturno+" class='form-check-input chturno' type='checkbox' value='' ></div>";
+        fechamostrada = conviertefechahispana(arreglo[a].fecha);
+        tabla.row.add([
+
+            "<p>" + arreglo[a].idturno + "</p>" , 
+            arreglo[a].duracion,
+            arreglo[a].instructor,
+            arreglo[a].actividad,
+            DiaSemanaYMD(arreglo[a].fecha).diatexto,
+            fechamostrada,
+            arreglo[a].horainicio,
+            // "<button id='Edi" + arreglo[a].idturno + "'class='btn btn-success btn-sm' type='button' data-toggle='modal' data-target='#formulariomodal' data-whatever='@getbootstrap' onclick='Editar(\"" + arreglo[a].idturno+"\")'><span class='material-symbols-outlined'>edit</span></button>",
+            tilde,
+            "<button id='Eli" + arreglo[a].idturno + "' class='btn btn-success btn-sm btnmenu elibutton' type='button' onclick='DeseaEliminar(\"" + arreglo[a].idturno+"\")'><span class='material-symbols-outlined '>delete</span></button>",
+        ]).draw(false);
+
+    }
+    document.getElementById("espera").style.visibility = "hidden";
+
+    mover(tabla);
+   
+}
+
+function mover(tabla){
+    tabla.columns.adjust().draw()
+    ira(500,"divarriba");
+  }
+
+function DeseaEliminarGrupalmente (){
+    Swal.fire({
+        title: 'Eliminar grupalmente?',
+        text: "Esto no podrá revertirse!",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Eliminar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            EliminarGrupalmente();
+        }
+    })
+}
+
+function EliminarGrupalmente()
+{
+    document.getElementById("espera").style.visibility = "visible";
+    
+    botoneseliminar = document.getElementsByClassName("elibutton");
+    for(e=0;e<botoneseliminar.length;e++)
+    {
+        botoneseliminar[e].disabled = true;
+    }
+
+    arregloParaEliminar = [];
+    checkdeturnos = document.getElementsByClassName("chturno");
+    for(c=0;c<checkdeturnos.length;c++)
+    {
+        if(checkdeturnos[c].checked)
+        {
+            var itemeli = new Object();
+            itemeli.idturno           = checkdeturnos[c].id,
+            arregloParaEliminar.push(itemeli);
+        }
+    }
+
+    archivodeconsulta = 'preborradomasivo.php';
+    paqueteJsonEliminar =JSON.stringify( arregloParaEliminar );
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: paqueteJsonEliminar,headers:{'Content-Type':'application/json'}})   
+    .then(response =>{if(response.statusText == 'OK'){}return response.json();})
+    .then(data => {
+        // ------------------------------------------------------------
+
+        for(z=0;z<data.length;z++)
+        {
+            for(j=0;j<arregloParaEliminar.length;j++)
+            {
+                if(arregloParaEliminar[j].idturno == data[z])
+                {
+                    arregloParaEliminar.splice(j,1);
+                }
+            }
+        }
+
+        archivodeconsulta = 'abmturnoseliminarmasivo.php';
+        paqueteJsonEliminar =JSON.stringify( arregloParaEliminar );
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: paqueteJsonEliminar,headers:{'Content-Type':'application/json'}})   
+        .then(response =>{if(response.statusText == 'OK'){}return response.json();})
+        .then(data => {
+        if(data >= 1){
+            for(de=0;de<botoneseliminar.length;de++)
+            {
+                botoneseliminar[de].disabled = false;
+            }
+
+            OcultarModal();
+            Limpiar();
+            Listar();
+            seleccionado = false;
+
+        }else{
+            for(de=0;de<botoneseliminar.length;de++)
+            {
+                botoneseliminar[de].disabled = false;
+            }
+            document.getElementById("espera").style.visibility = "hidden";
+        }
+        })
+        .catch(function (error){ console.log(error); });
+        // ------------------------------------------------------------
+    })
+    .catch(function (error){ console.log(error); });
+    
+}
+
+function MarcarBotonesEliminar(){
+    
+    seleccionado = !seleccionado;
+
+    checkdeturnos = document.getElementsByClassName("chturno");
+    for(c=0;c<checkdeturnos.length;c++)
+    {
+        if(seleccionado)
+        checkdeturnos[c].checked = true;
+        else
+        checkdeturnos[c].checked = false;
+    }
+}
+
+function DeseaEliminar(idpasado){
+    
+    Swal.fire({
+    title: 'Seguro desea eliminar?',
+    text: "Esto no podrá revertirse!",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Eliminar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Eliminar(idpasado);
+        }
+    })
+    
+}
+
+
+function Eliminar(idpasado){
+
+    archivodeconsulta = 'preborrado.php';
+    tipo    = "turno"; tabla   = "hureservas";    idcampo = "idturno";
+    let datosconsulta = {tipo : tipo,tabla  : tabla,idcampo : idcampo,valor:idpasado}
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{ if(response.statusText == 'OK'){}return response.json();})
+    .then(data=>{
+        cantidad = data.length;
+        if(cantidad >= 1)
+        {
+            console.log("seguir");
+            if(data[0]!="desconocido"){
+                mensaje("Importante","El turno es parte de alguna reserva, no se puede eliminar!","info","Ok");
+            }
+        }else{
+            // -------------------------------------------------
+            archivodeconsulta = 'abmturnos.php';
+            tipo = "eliminar";
+            datosconsulta = {tipo : tipo,idturno  : idpasado,idactividad : "",fecha:"",duracion:"",horainicio:"",idinstructor:""}
+            fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+            .then(response =>{if(response.statusText == 'OK'){}return response.json();})
+            .then(data=>{
+                if(data == 1)
+                {
+                    OcultarModal();
+                    Limpiar();
+                    Listar();
+                    mensaje("Eliminado","El turno fué eliminado correctamente.","success","Ok");
+                    botoneseliminar = document.getElementsByClassName("elibutton");
+                    botoneseliminar.forEach(HabilitarBotonesEliminar());
+                }
+            })
+            .catch(function (error){ console.log(error); });
+            // -------------------------------------------------
+        }
+    })
+    .catch(function (error){ console.log(error); });
+
+    
+}
+
+function Limpiar(){
+    
+    ldid.value = "";
+    ldduracion.value = "";
+    // ldhorainicio.value = "";
+    ldfechaturno.value = "";
+    ldfechaturnohasta.value = "";
+
+    ResetListaActividades();
+    ResetListaInstructores();
+    ldbotonguardar.disabled = false;
+    
+    document.getElementById("espera").style.visibility = "hidden";
+    
+    diaaborrar='';
+
+    cantidad = cantlunes;
+    dia='lunes';
+    cantlunes=0;
+    ldlunes.checked = false;
+    for(a=1;a<=cantidad;a++){
+        diaaborrar = document.getElementById(dia+a);
+        if(diaaborrar)    diaaborrar.remove();
+    }
+
+
+    cantidad = cantmartes;
+    dia='martes';
+    cantmartes=0;
+    ldmartes.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+    
+        if(diaaborrar)    diaaborrar.remove();
+    }
+
+
+    cantidad = cantmiercoles;
+    dia='miercoles';
+    cantmiercoles=0;
+    ldmiercoles.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+    
+        if(diaaborrar)    diaaborrar.remove();
+    }
+    
+    cantidad = cantjueves;
+    dia='jueves';
+    cantjueves=0;
+    ldjueves.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+    
+        if(diaaborrar)    diaaborrar.remove();
+    }
+    
+    cantidad = cantviernes;
+    dia='viernes';
+    cantviernes=0;
+    ldviernes.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+    
+        if(diaaborrar)    diaaborrar.remove();
+    }
+
+    cantidad = cantsabado;
+    dia='sabado';
+    cantsabado=0;
+    ldsabado.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+        if(diaaborrar)    diaaborrar.remove();
+    }
+        
+    cantidad = cantdomingo;
+    dia='domingo';
+    cantdomingo=0;
+    lddomingo.checked = false;
+    for(a=1;a<=cantidad;a++){diaaborrar = document.getElementById(dia+a);
+        if(diaaborrar)    diaaborrar.remove();
+    }
+    
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+
+    tabla.clear().draw();
+}
+
+// function Editar(idpasado){
+   
+//     ldfechaturnohasta.disabled = true;
+
+
+//     for(let a = 0 ;a<arreglo.length;a++)
+//     {
+//         if(arreglo[a].idturno == idpasado){
+
+//             ldid.value = arreglo[a].idturno;
+//             AsignaElementoAListaActividad(arreglo[a].idactividad);
+//             AsignaElementoAListaInstructor(arreglo[a].idinstructor);
+//             ldduracion.value = arreglo[a].duracion;
+//             ldhorainicio.value = arreglo[a].horainicio;
+//             ldfechaturno.value = arreglo[a].fecha;
+//         }
+//     }
+// }
+
+async function Configuratabla() 
+{
+    $('#tabla').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 100,
+        "columnDefs": [
+        { "width": "10%", "targets": 0 },
+        { "width": "15%", "targets": 1 },{ "width": "10%", "targets": 2 },
+        { "width": "25%", "targets": 3 },{ "width": "10%", "targets": 4 },{ "width": "10%", "targets": 5 },
+        { "width": "10%", "targets": 6 },{ "width": "5%", "targets": 7 },
+        { "width": "5%", "targets":8 },
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+            //     {
+            //       extend: 'excel',
+                    
+            //       text: '<button class="btn btn-success botontotal">Excel <i class="fas fa-file-excel"></i></button>'
+            //   },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+            //   {
+            //   extend: 'copy',
+            //   text: '<button class="btn btn-success botontotal">COPIAR<i class="fas fa-file-excel"></i></button>'
+
+            //   },
+        ],
+    });
+
+}
+
+async function CargarListaActividades(){
+    $("#contienelista").load("componenteactividades.html?n="+version);
+}
+
+async function CargarListaInstructores(){
+    $("#contieneInstructores").load("componenteinstructores.html?n="+version);
+}
+
+$(document).ready(function(){
+    ReconocerCampos();
+    Configuratabla();
+    CargarListaActividades();
+    CargarListaInstructores();
+    ColocaFechas();
+});
+
+</script>

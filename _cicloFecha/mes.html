@@ -1,0 +1,69 @@
+<style>
+    #messelect{
+        background-color: green;
+        color: white;
+    }
+</style>
+
+<select id="messelect" class="form-select form-select-sm " onchange="SeleccionaMes()" aria-label=".form-select-sm example">
+    <option selected>Mes</option>
+    <option value="01">Enero</option>
+    <option value="02">Febrero</option>
+    <option value="03">Marzo</option>
+    <option value="04">Abril</option>
+    <option value="05">Mayo</option>
+    <option value="06">Junio</option>
+    <option value="07">Julio</option>
+    <option value="08">Agosto</option>
+    <option value="09">Setiembre</option>
+    <option value="10">Octubre</option>
+    <option value="11">Noviembre</option>
+    <option value="12">Diciembre</option>
+</select>
+   
+<script>
+
+var selectmes;
+
+function ReconoceCampos(){
+    selectmes=document.getElementById("messelect");
+}
+
+function SeleccionaMes()
+{
+    messeleccionado = selectmes.options[selectmes.selectedIndex];
+
+    if(messeleccionado.text!="Mes")
+    {
+        $("#divdia").load('./cicloFecha/dia.html?n='+version);
+    }
+
+    mes = messeleccionado.value;
+    mescomponent = mes;
+
+    if ((mes === "Enero") ||
+        (mes === "Marzo") ||
+        (mes === "Mayo") ||
+        (mes === "Julio") ||
+        (mes === "Agosto") ||
+        (mes === "Octubre") ||
+        (mes === "Diciembre")
+    ) { diasdelmes = 31;} 
+    else if (
+        (mes === "Abril") |
+        (mes === "Junio") |
+        (mes === "Setiembre") |
+        (mes === "Noviembre")
+    ) { diasdelmes = 30;
+    } else {
+        var bisiesto = new Date(aniocomponent, 1, 29).getMonth() == 1;
+        bisiesto ? (diasdelmes = 29) : (diasdelmes = 28);
+    }
+
+    document.getElementById("siguiente").disabled = true;
+
+}
+
+$(document).ready(function(){
+    ReconoceCampos();
+});

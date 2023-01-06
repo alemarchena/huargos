@@ -1,0 +1,194 @@
+<div class="d-flex justify-content-center">
+    <a href="#" id="logoempresa"><img id="imagenlogo" class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px"></a>
+</div>
+
+<div class="container d-flex justify-content-center" style="padding: 0.5em;">
+    <p>En este panel puede crear modificar y eliminar las opciones del sistema</p>
+</div>
+<br>
+<div class="container">
+    
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Reservas()" class="btn  btn-lg btn-block btnmenu3">Reservas</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Reservas</h5>
+                    <p class="card-text">Administra y visualiza las reservas realizadas por los alumnos </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-body" >
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Ventas()" class="btn btn-lg btn-block btnmenu3" >Ventas</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Venta de Turnos</h5>
+                    <p class="card-text">Administra y visualiza los turnos vendidos y ocupados por los alumnos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Actividades()" class="btn  btn-lg btn-block btnmenu1">Actividades</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Detalle de Actividades</h5>
+                    <p class="card-text">Actividades  que ofrece el gimnasio ej: Kickboxing, boxeo, etc</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Alumnos()" class="btn  btn-lg btn-block  btnmenu3">Alumnos</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Datos del Alumno</h5>
+                    <p class="card-text">Permite administrar datos de los alumnos, nombre, clave, foto, etc</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- <div class="col-sm-12 col-md-6">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <button disabled  href="#" onclick="Permisos()" class="btn  btn-lg btn-block btnmenu2">Permisos</button>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Permisos</h5>
+                    <p class="card-text">Permite administrar el acceso a pantallas y permisos de edición y borrado</p>
+                </div>
+            </div>
+        </div> -->
+        <div class="col-sm-12 col-md-6">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Instructores()" class="btn  btn-lg btn-block btnmenu1">Instructores</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Instructores</h5>
+                    <p class="card-text">Administra datos de los Instructores que imparten las clases</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a  href="#" onclick="Tipoturno()" class="btn  btn-lg btn-block btnmenu2">Sistema de turnos</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Sistema de turnos</h5>
+                    <p class="card-text">Establece el tipo de turno fijo o variable</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Turnos()" class="btn  btn-lg btn-block btnmenu">Turnos</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Turnos diponibles</h5>
+                    <p class="card-text">Administración de turnos variables para ser reservados por los alumnos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-body" >
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="Itinerario()" class="btn btn-lg btn-block btnmenu" >Itinerario</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Itinerario Semanal</h5>
+                    <p class="card-text">Administración de un itinerario de turnos siempre igual y disponible para el alumno.</p>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-body" >
+                    <div class="d-flex justify-content-center">
+                        <a href="#" onclick="CriterioInasistencias()" class="btn btn-lg btn-block btnmenu4" >Inasistencias</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Manejo de Inasistencias</h5>
+                    <p class="card-text">Eliminar las inasistencias de alumnos bajo un criterio por cantidad.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        <a  href="#" onclick="Estadisticas()" class="btn  btn-lg btn-block btnmenu4">Estadísticas</a>
+                    </div>
+                    <br>
+                    <h5 class="card-title">Estadísticas</h5>
+                    <p class="card-text">Consultas e impresiones disponibles del sistema</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Actividades(){
+        $("#bloqueprincipal").load("actividades.html?v="+version);
+    }
+    function Alumnos(){
+        $("#bloqueprincipal").load("alumnos.html?v="+version);
+    }
+    function Instructores(){
+        $("#bloqueprincipal").load("instructores.html?v="+version);
+    }
+    function Turnos(){
+        $("#bloqueprincipal").load("turnos.html?v="+version);
+    }
+    function Reservas(){
+        $("#bloqueprincipal").load("reservas.html?v="+version);
+    }
+    function Ventas(){
+        $("#bloqueprincipal").load("ventas.html?v="+version);
+    }
+    function Itinerario(){
+        $("#bloqueprincipal").load("itinerario.html?v="+version);
+    }
+    function Permisos(){
+        $("#bloqueprincipal").load("permisos.html?v="+version);
+    }
+    function CriterioInasistencias(){
+        $("#bloqueprincipal").load("criterioinasistencias.html?v="+version);
+    }
+    function Estadisticas(){
+        $("#bloqueprincipal").load("estadisticas.html?v="+version);
+    }
+    function Tipoturno(){
+        $("#bloqueprincipal").load("tipoturno.html?v="+version);
+    }
+   
+</script>

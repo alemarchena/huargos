@@ -1,0 +1,386 @@
+<style>
+    .obj{
+        max-width: 300px;
+    }
+#espera{
+    visibility: hidden;
+}
+</style>
+<form method="post" enctype="multipart/form-data" name="fileinfo">
+    <div class="row">
+        <div class="col-sm-10 col-md-4 offset-md-2">
+            <img  class="img-fluid" id="fotoalumno" src="" alt="">
+        </div>
+        <div class="col-sm-10 col-md-4">
+            <img  class="img-fluid" id="fotocertificadoalumno" src="" alt="">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" style="text-align: center;background-color: antiquewhite;">
+                <div id="fileList">
+                    <p>(Opcional)Suba su foto</p>
+                </div>
+                <input   type="file" id="foto" name="foto" accept="image/*" style="display:none">
+                <a href="#" id="fileSelect">Selecciona una foto tuya</a>
+                <div id="preview"></div>
+            </div>
+            
+            <div class="col-sm-6" style="text-align: center;background-color: rgb(219, 206, 188);">
+                <div id="fileList1">
+                    <p>(Opcional) Su el certificado de aptitud física!</p>
+                </div>
+                <input type="file" id="certificado" name="certificado" accept="image/*" style="display:none">
+                <a href="#" id="fileSelect1">Selecciona una imagen del certificado de aptitud física</a>
+                <div id="preview1"></div>
+            </div>
+        </div>
+    </div>
+    <div id="espera" class="d-flex justify-content-center">
+        <div class="spinner-border text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div id="aviso" class="d-flex justify-content-center"></div>
+    <div class="d-flex justify-content-center">
+        <button id="siguiente" onclick="Datos()" class="btn btn-success" >Guardar</button>
+    </div>
+    <hr>
+
+</form>
+<script>
+var contadorimagenessubidas=0;
+var cantidaddeimagenesasubir=0;
+var nombrefoto       = "";
+var nombrecertificado= "";
+var existe=0;
+
+function Datos(){
+    document.getElementById("espera").style.visibility = "visible";
+    Guardar();
+    event.preventDefault();
+    event.stopPropagation();
+}
+
+
+//---------------------- Agregado de foto del alumno --------------------------
+var fileSelect = document.getElementById("fileSelect"),
+    fileElem = document.getElementById("foto"),
+    fileList = document.getElementById("fileList");
+
+    fileSelect.addEventListener("click", function (e) {
+    if (fileElem) {
+        fileElem.click();
+    }
+    e.preventDefault(); // prevent navigation to "#"
+    }, false);
+
+fileElem.addEventListener("change", AgregaArchivos, false);
+
+function AgregaArchivos(files) {
+
+    if (!this.files.length) {
+        fileList.innerHTML = "<p>No ha seleccionado ningún archivo!</p>";
+    } else {
+        console.log(fileList.childElementCount);
+        if (fileList.childElementCount==1) {
+                
+            fileList.innerHTML = "";
+            for (let i = 0; i < this.files.length; i++) 
+            {
+                const file = this.files[i];
+
+                const img = document.createElement("img");
+                
+                img.classList.add("obj");
+                img.classList.add("rounded");
+                img.classList.add("float-right");
+                img.classList.add("img-thumbnail");
+                img.classList.add("objfoto");
+                img.file = file;
+                img.src = URL.createObjectURL(this.files[i]);
+
+                img.height = 60;
+                img.onload = function() {
+                    URL.revokeObjectURL(this.src);
+                }
+                
+                preview = document.getElementById("preview");
+                preview.appendChild(img); // Assuming that "preview" is the div output where the content will be displayed.
+
+                if(cantidaddeimagenesasubir<2)
+                    cantidaddeimagenesasubir = cantidaddeimagenesasubir + 1;
+                
+            }
+        }
+    }
+}
+
+//------------------------ agregado del certificado ------------------------------------
+var fileSelect1 = document.getElementById("fileSelect1"),
+    fileElem1 = document.getElementById("certificado"),
+    fileList1 = document.getElementById("fileList1");
+
+    fileSelect1.addEventListener("click", function (e) {
+    if (fileElem1) {
+        fileElem1.click();
+    }
+    e.preventDefault(); // prevent navigation to "#"
+    }, false);
+
+fileElem1.addEventListener("change", AgregaArchivos1, false);
+
+function AgregaArchivos1(files) {
+
+    if (!this.files.length) {
+        fileList1.innerHTML = "<p>No ha seleccionado ningún archivo!</p>";
+    } else {
+        if (fileList1.childElementCount==1) {
+            fileList1.innerHTML = "";
+            for (let i = 0; i < this.files.length; i++) 
+            {
+                const file = this.files[i];
+
+                const img = document.createElement("img");
+
+                img.classList.add("obj");
+                img.classList.add("objcertificado");
+                img.classList.add("rounded");
+                img.classList.add("float-right");
+                img.classList.add("img-thumbnail");
+
+                img.file = file;
+                img.src = URL.createObjectURL(this.files[i]);
+
+                img.height = 60;
+                img.onload = function() {
+                    URL.revokeObjectURL(this.src);
+                }
+                
+                preview = document.getElementById("preview1");
+                preview.appendChild(img); // Assuming that "preview" is the div output where the content will be displayed.
+
+                if(cantidaddeimagenesasubir<2)
+                    cantidaddeimagenesasubir = cantidaddeimagenesasubir + 1;
+
+            }
+        }
+    }
+}
+
+
+var formData;
+
+function SubirArchivos(img,imagenRecibida){
+    
+ 
+    formData = new FormData();
+    
+    formData.append("photo", imagenRecibida);
+    fetch('./controladores/subirimagen.php', {method: "POST", body: formData})
+    .then((response)=>response.json())
+    .then(data =>{
+        
+        contadorimagenessubidas=contadorimagenessubidas+1;
+        
+        if(contadorimagenessubidas==1){
+
+
+            if(img.classList.contains( 'objfoto' ))
+            {
+                document.getElementById("aviso").innerHTML = "Subiendo foto...";
+
+                nombrefoto=data;
+                EliminarImagen(fotoactual);
+
+            }
+            if(img.classList.contains( 'objcertificado' ))
+            {
+                document.getElementById("aviso").innerHTML = "Subiendo certificado...";
+
+                nombrecertificado=data;
+                EliminarImagen(certificadoactual);
+
+            }
+            
+            if(cantidaddeimagenesasubir==1)
+            {
+                setTimeout(() => {
+                    GuardarDatos();
+                }, 300);
+            }
+        }
+
+        if(contadorimagenessubidas==2)
+        {
+            if(img.classList.contains( 'objfoto' ))
+            {
+                document.getElementById("aviso").innerHTML = "Subiendo foto...";
+                nombrefoto=data;
+                EliminarImagen(fotoactual);
+
+            }
+            if(img.classList.contains( 'objcertificado' ))
+            {
+                document.getElementById("aviso").innerHTML = "Subiendo certificado...";
+                nombrecertificado=data;
+                EliminarImagen(certificadoactual);
+
+            }
+            document.getElementById("espera").style.visibility = "hidden";
+
+            
+            setTimeout(() => {
+                    GuardarDatos();
+            }, 300);
+        }
+    })
+    .catch(function (error){ console.log(error); });
+
+}
+
+
+function Limpiar(){
+
+    usuarioactual = ldusuario.value;
+    nombrefoto       = "";
+    nombrecertificado= "";
+    contadorimagenessubidas=0;
+    cantidaddeimagenesasubir=0;
+}
+
+function Guardar() {
+
+    const imgs = document.querySelectorAll(".obj");
+    if(imgs.length>0){
+
+        document.getElementById("aviso").innerHTML = "Subiendo archivos...";
+        for (let i = 0; i < imgs.length; i++) {
+            SubirArchivos(imgs[i],imgs[i].file);
+        }
+    }else
+    {
+        GuardarDatos();
+    }
+}
+
+
+function GuardarDatos()
+{
+    
+
+    document.getElementById("aviso").innerHTML = "Guardando información...";
+
+    archivodeconsulta = 'abmalumnos.php';
+
+    estado = estadoactualalumno;
+    tipo = "modificar";
+    
+    let datosconsulta = {tipo : tipo,idalumno  : idalumno,nombre : ldnombre.value,apellido:ldapellido.value,
+        dni:lddni.value,email:ldemail.value,whatsapp:ldwhatsapp.value,
+        foto:nombrefoto,certificado:nombrecertificado,
+        estado:estado,usuario  : ldusuario.value,fechanacimiento:ldfechanacimiento.value}
+
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{
+        if(response.statusText == 'OK'){}
+        return response.json();
+    }).then(data => {
+        if(data == 1){
+            // --------------------------------------------------------------
+
+            archivodeconsulta1 = 'abmalumnospas.php';
+            tipo = "modificarsolousuario";
+
+            let datosconsulta1 = {tipo : tipo,usuario  : ldusuario.value,usuarioanterior:usuarioactual, clave:''}
+
+            fetch("./controladores/" + archivodeconsulta1 +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta1 ),headers:{'Content-Type':'application/json'}})   
+            .then(response =>{
+                if(response.statusText == 'OK'){}
+                return response.json();
+            }).then(data => {
+                if(data == 1){
+                    Limpiar();
+                    Swal.fire({
+                        title:'Excelente',
+                        text:'Vamos a reiniciar el login',
+                        icon:'success',
+                        button:'Ok'
+                    })
+                    document.getElementById("espera").style.visibility = "hidden";
+                    document.getElementById("aviso").innerHTML = "";
+
+                    setTimeout(() => {
+                        location.reload(true);
+                    }, 2500);
+                }
+            })
+            .catch(function (error){ console.log(error); });
+
+            // ----------------------------------------------------------------
+        }
+    })
+    .catch(function (error){ console.log(error); });
+
+
+}
+
+
+function ConsultaUsuario()
+{
+    event.preventDefault();
+    event.stopPropagation();
+
+    let datosconsulta = {usuario:ldusuario.value,clave:'',tipo:"consultasolousuario"}
+    fetch('controladores/consultaalumnospas.php',{method:'POST',body:JSON.stringify(datosconsulta),headers:{'Content-Type':'application/Json'}})
+    .then(response=>{
+      if(response.status==200)
+      {
+        return response.json();
+      }
+    })
+    .then(data=>{
+  
+        if(data.length>0)
+        {
+            if(ldusuario.value == data[0].usuario &&  ldusuario.value != usuarioactual && ldusuario.value != '')
+            {
+                existe = 1;
+               
+                document.getElementById("espera").style.visibility = "hidden";
+
+                ldusuario.value = usuarioactual;
+                
+                Swal.fire({
+                    title:"Usuario existente",
+                    text:"Este usuario ya existe, intente con otro nick",
+                    icon:'info',
+                    button:"Ok"
+                });
+                
+  
+            }else{
+                if(ldusuario.value == '')
+                    ldusuario.value = usuarioactual;
+                existe = 0;
+            }
+        }else{
+            if(ldusuario.value == '')
+                ldusuario.value = usuarioactual;
+            existe = 0;
+        }
+    })
+    .catch(function(error){
+        Swal.fire({
+            title:"Error",
+            text:"Se produjo un error al revisar la existencia del usuario!",
+            icon:'error',
+            button:"Ok"
+        });
+        console.log(error);
+      });
+}
+
+
+</script>

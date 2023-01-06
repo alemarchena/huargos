@@ -1,0 +1,67 @@
+<style>
+#contenedorlogin{
+    background-color: rgb(206, 205, 205)!important;
+    padding: 2em;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 0px solid #000000;
+}
+</style>
+<div  class="d-flex justify-content-center m2">
+    <div  class="col-sm-10 p-2 col-md-3 ">
+            <form id="contenedorlogin">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Nosotros nunca divulgaremos su información.</div>
+                </div>
+                
+                <div class="row g-3 align-items-center">
+                    <div class="col-auto">
+                        <label for="password" class="col-form-label">Password</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="password" id="password" class="form-control" aria-describedby="passwordHelpInline">
+                    </div>
+                    <div class="col-auto">
+                        <i class="btn icon fa fa-eye-slash" type="button" id="button-addon2"></i>
+                    </div>
+                    <div class="col-auto">
+                        <span id="passwordHelpInline" class="form-text">
+                            Entre 8 y 20 caracteres.
+                        </span>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                        <button id="quickstart-sign-in" class="btn btn-primary">Enter</button>
+                </div>
+            </form>
+    </div>
+</div>
+
+  <script>
+    $(document).ready(function(){
+        // console.log(actual);
+        if(actual=="loginafi"){
+            document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+        }else{
+            document.getElementById('quickstart-sign-in').addEventListener('click', handleSignUp, false);
+        }
+        //  mostrarVolver();
+    });
+
+    function mostrarPassword() { 
+        var cambio = document.getElementById("password"); 
+        if (cambio.type == "password") { 
+            cambio.type = "text"; 
+            $('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye'); 
+        } else { 
+            cambio.type = "password"; 
+            $('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash'); 
+        } 
+    } 
+
+    $("#button-addon2").click(function () {mostrarPassword();});
+
+  </script>

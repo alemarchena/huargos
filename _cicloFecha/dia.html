@@ -1,0 +1,62 @@
+<style>
+    #diaselect{
+        background-color: green;
+        color: white;
+    }
+</style>
+<select id="diaselect" class="form-select form-select-sm" onchange="SeleccionaDia()" aria-label=".form-select-sm example">
+    <option selected>Día</option>
+</select>
+
+<script>
+
+var selectdia;
+var anterior;
+
+function LlenaDias()
+{
+    valor='';
+    if(selectdia){
+        for(a=1;a<=diasdelmes;a++){
+            opcion = document.createElement('option');
+            if(a<10)valor = "0"+a;else valor = a;
+            opcion.value = valor;
+            opcion.text= valor;
+            selectdia.appendChild(opcion); 
+        }
+    }
+}
+
+function ReconoceCampos(){
+    selectdia=document.getElementById("diaselect");
+}
+function SeleccionaDia(){
+
+    diaseleccionado = selectdia.options[selectdia.selectedIndex];
+    diacomponent = diaseleccionado.text;
+    fechacomponent = diacomponent + "-" + mescomponent + "-" + aniocomponent; 
+
+    fec=FechamdaAamd(fechacomponent);
+    document.getElementById("fechanacimiento").value =fec;
+
+    
+    if(diaseleccionado.text!="Dia")
+    {
+        document.getElementById("siguiente").disabled = false;
+        
+    }else{
+        document.getElementById("siguiente").disabled = true;
+    }
+
+    ValidarEscritura();
+
+
+}
+
+function Anterior(){
+    $("#contiene").load('./cicloFecha/mes.html?n='+version);
+}
+$(document).ready(function(){
+    ReconoceCampos();
+    LlenaDias();
+});

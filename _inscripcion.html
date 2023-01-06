@@ -1,0 +1,1131 @@
+<style>
+  
+@media (min-width: 601px)  {
+    #componentediamesanio {
+        display: none!important;
+    }
+
+    #componentefecha {
+        display: block!important;
+    }
+}
+@media screen and (max-width: 900px) and (orientation: portrait){
+    #componentediamesanio {
+        display: block!important;
+    }
+
+    #componentefecha {
+        display: none!important;
+    }
+}
+
+@media only screen and (max-Height : 480px) {
+    #componentediamesanio {
+        display: block!important;
+    }
+
+    #componentefecha {
+        display: none!important;
+    }
+}
+
+  #espera{visibility: hidden;}
+  .divtit{background-color: #b3a845!important;}
+  table {table-layout:fixed;}
+  table td {word-wrap: break-word;max-width: 400px;}
+  #tablapropuestas td {white-space:inherit;}
+  .dataTables_filter {float: right !important;}
+  table.dataTable td {font-size: 1em;}
+  table.dataTable th {font-size: 0.9em;}
+  .botontotal{width: 100%;  background-color: #3960a8;  color: white;}
+  .botontotal:hover{  width: 100%;  background-color: #8f2f2f;  color: rgb(243, 242, 242);}
+  .dt-button {    padding: 0;    border: none;}
+  #divformulario{padding-bottom: 2em;}
+  .espacio{  margin: 0.5em;}
+  #subtitulo{  font-family: 'Charis SIL', serif;  color: #534c07;  }
+  .caja{  margin: 0.5em;  }
+  .invalid-tooltip{background-color: rgb(169, 170, 109)!important;}
+  .line-1{position: relative;top: 50%;width: 24em;margin: 0 auto;border-right: 2px solid rgba(255,255,255,.75);
+      border-left: 2px solid rgba(255,255,255,.75);text-align: center;white-space: nowrap;
+      overflow: hidden;      transform: translateY(-50%);  }
+  
+  #fecha,#fechahasta{
+    line-height: 1.4em!important;
+    font-size: 1.2em!important;
+    margin: 0.5em;  
+    
+  }
+  
+  #divdatosfecha{
+    margin: 0!important;
+  }
+  @media (min-device-width: 320px) and (max-device-width: 640px)
+  {
+    #fecha,#fechahasta {line-height: 1.55em!important;font-size: 1.55em!important;margin: 0.5em;}
+  }
+
+  .zoom {
+    -webkit-transition: all 0.35s ease-in-out;
+    -moz-transition: all 0.35s ease-in-out;
+    transition: all 0.35s ease-in-out;
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in;
+    cursor: zoom-in;
+  }
+  </style>
+
+<!-- ------------------------------------- Modal ----------------------------------- -->
+
+<!-- Modal -->
+<div class="modal fade" id="modalclave" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Datos de alumno</h5>
+        <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <div class="d-flex justify-content-center">
+                <input id="estado" readonly style="text-align: center;"></input>
+              </div>
+
+              <!-- <div class="row">
+                <div class="col-sm-10 col-md-4 offset-md-2">
+                  <label for="idalumno" class="col-form-label">Id</label>
+                  <input type="text" class="form-control" id="idalumno" disabled readonly >
+                </div>
+                <div class="col-sm-10 col-md-4 " style="text-align: center;">
+                  <label for="usuario" class="col-form-label">usuario</label>
+                  <input type="text" class="form-control" id="usuario" placeholder="Tu nick de ingreso">
+                </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-sm-10 col-md-4">
+                    <label for="nombre" class="col-form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" >
+                </div>
+                <div class="col-sm-10 col-md-4">
+                    <label for="apellido" class="col-form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" >
+                </div>
+                <div class="col-sm-10 col-md-4">
+                  <label for="dni" class="col-form-label">DNI</label>
+                  <input type="text" class="form-control" id="dni" >
+                </div>
+              </div> -->
+
+              <br>
+              
+              <!-- <div class="row">
+               <div class="col-sm-10 col-md-4 offset-md-2" style="text-align: center;">
+                <label for="email" class="col-form-label">email</label>
+                  <input type="text" class="form-control" id="email" placeholder="Ej : alexperez@gmail.com">
+                </div>
+                <div class="col-sm-10 col-md-4" style="text-align: center;">
+                  <label for="whatsapp" class="col-form-label">Whatsapp</label>
+                  <input type="text" class="form-control" id="whatsapp" placeholder="Ej : 549261XXXXXX sin el +">
+                </div>
+              </div> -->
+              
+              <!-- -------------------- Fecha de nacimiento ------------------- -->
+              <!-- <br>
+              <div  class="d-flex justify-content-center"><p>Fecha de nacimiento</p></div>
+              <div id="componentediamesanio"  class="d-flex justify-content-center"></div>
+
+              <div  class="d-flex justify-content-center">
+                <div id="componentefecha" class="row">
+                  <div class="col-sm-10 col-md-4 offset-md-2" style="text-align: center;">
+                    <input type="date" id="fechanacimiento" name="fechanacimiento">
+                  </div>
+                </div>
+              </div>
+           <hr>
+             -->
+            <div class="d-flex justify-content-center">
+              <h5>Imagenes</h5>
+            </div>
+            <!-- -------------------- Imagenes ------------------- -->
+            <div id="divimagenes"></div>
+
+            <!-- -------------------- campos clave ------------------- -->
+            <div class="d-flex justify-content-center">
+              <h5>Cambio de clave</h5>
+            </div>
+            
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                  <div class="row align-items-center" >
+                      <div class="col-sm-11">
+                          <label for="password">Clave</label>
+                          <input type="password" id="password" onkeyup="ValidarEscritura()" placeholder="Escribe tu Contraseña" class="form-control caja" aria-describedby="passwordHelpInline">
+                      </div>
+                      <div class="col-md-1" >
+                          <i class="btn icon fa fa-eye-slash" type="button" id="verclave"></i>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <span id="passwordHelpInline" class="form-text">
+                              Longitud de 4 a 8 caracteres
+                          </span>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                  <div class="row align-items-center">
+                      <div class="col-sm-11 ">
+                          <label for="password">Repetir Clave</label>
+                          <input type="password" id="password1"onkeyup="ValidarEscritura()" placeholder="Repite la Contraseña" class="form-control caja" aria-describedby="passwordHelpInline1">
+                      </div>
+                      <div class="col-md-1">
+                          <i class="btn icon fa fa-eye-slash" type="button" id="verclave1"></i>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <span id="passwordHelpInline1" class="form-text">
+                          Longitud de 4 a 8 caracteres
+                          </span>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button id="btnguardarclave" type="button" disabled onclick="GuardarClave()" class="btn btn-success">Guardar clave</button>
+            </div>
+            <div class="d-flex justify-content-center">
+              <p id="revisorclaves" class="form-text"></p>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ------------------------------------- Fin Modal ----------------------------------- -->
+<div id="contenedor" class="container">
+ 
+</div>
+
+
+<div id="divformulario" class="d-flex justify-content-center container" >
+
+    <form class="row needs-validation" novalidate>
+      <div id="divdatosfecha" class="row  ">
+        <div class="col-sm-12 col-md-2" style="text-align: center;">
+          <a class="btn btn-success" href="#" onclick="MisTurnos()">Mis turnos</a>
+        </div>
+        <div class="col-sm-12 col-md-4 " style="text-align: center;">
+          <label for="fecha"></label>
+          <input type="date" id="fecha" name="fecha">
+        </div>
+        <div class="col-sm-12 col-md-4" style="text-align: center;">
+          <label for="fechahasta"></label>
+          <input type="date" id="fechahasta" name="fechahasta">
+        </div>
+        <div class="col-sm-12 col-md-2" style="text-align: center;">
+          <button class="btn btn-success" onclick="Refrescar()"><span class="material-symbols-outlined">refresh</span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div  class="d-flex justify-content-center container" >
+    <p id="explicacion" class="line-1 "></p>
+  </div>
+
+  <hr id="targetbotonflotante">
+  <div class="d-flex justify-content-center"><h5 id="titulo" style="text-align: center;"></h5></div>
+
+  <div id="espera" class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div id="registros" class="table-responsive" >
+      <table id="tabla" class="display table table-striped" style="width: 100%!important;">
+        <thead><tr>
+          <th>Actividad</th>
+          <th>Día</th>
+          <th>Fecha</th>
+          <th>Hora de inicio</th>
+          <th>Registro</th>
+          <th>Duración</th>
+        </tr></thead>
+        <tbody><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+<script>
+
+var arreglointeres = [];
+
+var colorOriginal="#198754";
+var colorPresionado="#b3a845";
+var llamomisturnos=false;
+
+var ldestado;
+var ldidalumno;
+var ldusuario;
+var lddni;
+var ldemail;
+var ldwhatsapp;
+var ldnombre;
+var ldapellido;
+var ldfechanacimiento;
+
+
+//Campos del formulario
+var ldfechaturno;
+var ldfechaturnohasta;
+var ldtitu;
+var ldregistrotabla;
+var ldclave;
+var ldclave1;
+
+function ReconoceCampos(){
+    ldclave = document.getElementById("password");
+    ldclave1 = document.getElementById("password1");
+
+    ldidalumno = document.getElementById("idalumno");
+    ldestado  = document.getElementById("estado");
+    ldusuario = document.getElementById("usuario");
+    lddni     = document.getElementById("dni");
+    ldnombre  = document.getElementById("nombre");
+    ldapellido= document.getElementById("apellido");
+    ldemail   = document.getElementById("email");
+    ldwhatsapp= document.getElementById("whatsapp");
+    ldfechanacimiento = document.getElementById("fechanacimiento");
+    
+}
+
+document.getElementById("fecha").addEventListener('input', ValidarCampos);
+document.getElementById("fechahasta").addEventListener('input', ValidarCampos);
+
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+        }
+
+    })
+})()
+
+
+
+function ValidarDatosUsuario(){
+
+  retorno = true;
+
+  if(ldemail.value == '' ){
+    retorno = false;
+    mensaje('Email','Falta el email','info','Ok');
+  }
+  if(ldwhatsapp.value == ''){
+    retorno = false;
+    mensaje('Whatsapp','Falta el whatsapp','info','Ok');
+  }
+  
+
+  return retorno;
+}
+
+function Iniciar(){
+    ldfechaturno = document.getElementById("fecha");
+    ldfechaturnohasta = document.getElementById("fechahasta");
+    ldtitu = document.getElementById("titulo");
+    ldregistrotabla= document.getElementById("registros");
+    configuratabla();
+    ColocaFechas();
+    TraeDatosAlumno();
+    CargarComponenteDMY();
+    Subirimagenes();
+}
+
+function ValidarCampos()
+{
+  llamomisturnos=false;
+  let st = document.getElementById("subtitulo");
+
+  if(st){
+    st.innerHTML = "";
+  }
+  if(ldfechaturno.value != "" && ldfechaturnohasta.value != "")
+  {
+    if(ldfechaturno.value < CreaFechaBDD(FechaActualddmmyyyy()))
+    {
+      ldfechaturno.value = CreaFechaBDD(FechaActualddmmyyyy());
+      Swal.fire({title: 'Aviso',text: 'Se estableció la fecha de consulta a hoy. Solo puede ver turnos de hoy en adelante!',icon: 'info'});
+
+    }else if(ldfechaturnohasta.value < CreaFechaBDD(FechaActualddmmyyyy()))
+    {
+      ldfechaturnohasta.value = CreaFechaBDD(FechaActualddmmyyyy());
+      Swal.fire({title: 'Aviso',text: 'Se estableció la fecha de consulta a hoy. Solo puede ver turnos de hoy en adelante!',icon: 'info'});
+
+    }
+    PreCargaTurnos();
+  }
+}
+
+  function ColocaFechas(){
+    ldfechaturno.value = CreaFechaBDD(FechaActualddmmyyyy());
+    ldfechaturnohasta.value = CreaFechaBDD(FechaActualddmmyyyy());
+  }
+
+  //----------------------------------------------------------------------------------
+
+  arreglo = [];
+
+  function PreCargaTurnos()
+  {
+      document.getElementById("espera").style.visibility = "visible";
+
+      arreglo = [];
+
+      tipoopcion = "consultaxfecha";
+      archivodeconsulta = 'consultaturnos.php';
+      let datosconsulta = {tipo : tipoopcion,idturno  : 0,fecha:ldfechaturno.value,fechahasta:ldfechaturnohasta.value,idactividad:0}
+      fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+      .then(response => response.json())
+      .then(data =>
+      {
+          let cantidad =  data.length;
+          //  let cantidad = Object.keys(data).length;
+          if(data[0] != 'desconocido')
+          {
+
+            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+            {
+                toPropuestas = new Object();
+                toPropuestas.idturno      = data[a].idturno;
+                toPropuestas.idactividad  = data[a].idactividad;
+                toPropuestas.idalumno     = idalumno;
+                toPropuestas.actividad    = data[a].actividad;
+                toPropuestas.fecha        = data[a].fecha;
+                toPropuestas.duracion     = data[a].duracion;
+                toPropuestas.horainicio   = data[a].horainicio;
+                toPropuestas.idinstructor = data[a].idinstructor;
+
+                arreglo.push(toPropuestas);
+            }
+
+          }
+
+          VerTurnos();
+
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+
+  }
+
+  // --------------------------------------------------------------------------------
+
+  function VerMisTurnos(arreglointeres)
+  {
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+      tabla = $('#tabla').DataTable();
+    }
+
+    tabla
+      .clear()
+      .draw();
+
+    if(arreglointeres.length > 0)
+    {
+      ldtitu.innerHTML = "Mis turnos";
+      
+      //verifica si el turno esta marcado como reservado
+      for(a=0;a<arreglointeres.length;a++)
+      {
+
+        cantidadDias = DiasEntreFechas(arreglointeres[a].fechaactividad,FechaActualddmmyyyy()); 
+        if(arreglointeres[a].asistio == 1){
+          botonreserva = 'Asistió';
+        }else{
+          if(cantidadDias>0){
+              botonreserva='Ausente';
+          }else{
+            botonreserva = "<button id='Reserva" + arreglointeres[a].idturno + "' class='btn btn-success btn-sm' type='button' onclick='MeinteresaMisTurnos(\"" + arreglointeres[a].idturno+"\")' style='color: black; background-color:"+colorPresionado+"'>Anotado</button>";
+          }
+        }
+        tabla.row.add([
+        arreglointeres[a].actividad,
+          conviertefechahispana(arreglointeres[a].fechaactividad),
+          arreglointeres[a].horainicio,
+          botonreserva,
+          arreglointeres[a].duracion,
+          arreglointeres[a].asistio,
+        ]).draw(false);
+        
+      }
+      document.getElementById("espera").style.visibility = "hidden";
+
+      Vertabla();
+
+    }else{
+      if(ldfechaturno.value!="")
+      {
+        ldregistrotabla.style.display = "none";
+        document.getElementById("espera").style.visibility = "hidden";
+
+        ira(500,"targetbotonflotante");
+        ldtitu.innerHTML = "No hay actividades entre estos días";
+      }
+    }
+  }
+
+  function MeinteresaMisTurnos(valor)
+  {
+    document.getElementById("Reserva"+valor).disabled = true;
+    document.getElementById("espera").style.visibility = "visible";
+
+    if(!leaviso){
+      let boton = document.getElementById("botonflotanteenviar");
+      boton.style.display= "block";
+    }
+
+    for(a=0;a<arreglointeres.length;a++)
+    {
+      if(arreglointeres[a].idturno == valor)
+      {
+          interes = new Object();
+          interes.idturno         = arreglointeres[a].idturno;
+          interes.idactividad     = arreglointeres[a].idactividad;
+          interes.fechaactividad  = arreglointeres[a].fecha;
+          interes.horainicio      = arreglointeres[a].horainicio;
+          interes.idalumno        = arreglointeres[a].idalumno;
+          interes.asistio         = arreglointeres[a].asistio;
+          interes.tipo            = 'guardar';
+      }
+    }
+
+    let boton = document.getElementById("Reserva" + valor);
+
+    if(boton)
+    {
+      if(boton.innerText =="Anotado")
+      {
+        boton.innerText ="Me anoto";
+        boton.style.backgroundColor = colorOriginal;
+        boton.style.color = "white";
+
+        EliminarInteres(interes,valor);
+
+      }else{
+
+        boton.innerText ="Anotado";
+        boton.style.color = "black";
+        boton.style.backgroundColor = colorPresionado;
+
+        GuardarInteres(interes,valor);
+      }
+    }
+  }
+
+  function VerTurnos()
+  {
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+      tabla = $('#tabla').DataTable();
+    }
+
+    tabla
+      .clear()
+      .draw();
+
+    if(arreglo.length > 0)
+    {
+      ldtitu.innerHTML = "Actividades del día "+ ldfechaturno.value;
+
+      for(let a = 0 ;a<arreglo.length;a++)
+      {
+        botonreserva = "<button id='Reserva" + arreglo[a].idturno + "' class='btn btn-success btn-sm' type='button' onclick='Meinteresa(\"" + arreglo[a].idturno+"\")' style='color: white; background-color:"+colorOriginal+"'>Me anoto</button>";
+
+        //verifica si el turno esta marcado como reservado
+        for(r=0;r<arreglointeres.length;r++)
+        {
+          if(arreglo[a].idturno == arreglointeres[r].idturno &&
+            arreglo[a].fecha == arreglointeres[r].fechaactividad ){
+
+            if(arreglointeres[r].asistio == 1){
+              //encontro una reserva del dia y YA NO DEJA cambiar nada con la RESERVA
+              botonreserva = 'Asistió';
+            }else{
+              //encontro una reserva del dia y modifica el boton de RESERVA
+              botonreserva = "<button id='Reserva" + arreglo[a].idturno + "' class='btn btn-success btn-sm' type='button' onclick='Meinteresa(\"" + arreglo[a].idturno+"\")' style='color: black; background-color:"+colorPresionado+"'>Anotado</button>";
+            }
+          }
+        }
+        tabla.row.add([
+          arreglo[a].actividad,
+          DiaSemanaYMD(arreglo[a].fecha).diatexto,
+          conviertefechahispana(arreglo[a].fecha),
+          arreglo[a].horainicio,
+          botonreserva,
+          arreglo[a].duracion,
+          ]).draw(false);
+      }
+      document.getElementById("espera").style.visibility = "hidden";
+
+      Vertabla();
+
+    }else{
+      if(ldfechaturno.value!="")
+      {
+        ldregistrotabla.style.display = "none";
+        document.getElementById("espera").style.visibility = "hidden";
+
+        ira(500,"targetbotonflotante");
+        ldtitu.innerHTML = "No hay actividades entre estos días";
+      }
+    }
+  }
+
+  async function Vertabla()
+  {
+    // ira(200,"contenedor");
+
+
+    tabla = undefined;
+    ldregistrotabla.style.display = "block";
+
+    ldtitu.innerHTML = "Información de Turnos";
+
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+      tabla = $('#tabla').DataTable();
+    }
+
+    if (screen.width <= 720)
+    {
+      setTimeout(() => {
+        mover(tabla);
+      }, 500);
+    }else{
+      mover(tabla);
+    }
+  }
+
+  function mover(tabla){
+    tabla.columns.adjust().draw()
+    ira(500,"targetbotonflotante");
+  }
+
+leaviso = false;
+
+  function Meinteresa(valor)
+  {
+    document.getElementById("Reserva"+valor).disabled = true;
+    document.getElementById("espera").style.visibility = "visible";
+
+    if(!leaviso){
+      let boton = document.getElementById("botonflotanteenviar");
+      boton.style.display= "block";
+    }
+
+    for(a=0;a<arreglo.length;a++)
+    {
+      if(arreglo[a].idturno == valor)
+      {
+          interes = new Object();
+          interes.idturno         = arreglo[a].idturno;
+          interes.idactividad     = arreglo[a].idactividad;
+          interes.fechaactividad  = arreglo[a].fecha;
+          interes.horainicio      = arreglo[a].horainicio;
+          interes.idalumno        = arreglo[a].idalumno;
+          interes.asistio         = 0;
+          interes.tipo            = 'guardar';
+      }
+    }
+
+    let boton = document.getElementById("Reserva" + valor);
+
+    if(boton)
+    {
+      if(boton.innerText =="Anotado")
+      {
+        boton.innerText ="Me anoto";
+        boton.style.backgroundColor = colorOriginal;
+        boton.style.color = "white";
+
+        EliminarInteres(interes,valor);
+
+      }else{
+
+        boton.innerText ="Anotado";
+        boton.style.color = "black";
+        boton.style.backgroundColor = colorPresionado;
+
+        GuardarInteres(interes,valor);
+      }
+    }
+  }
+
+async function TraeDatosAlumno(){
+
+  rutaimagenalumno = "imgalumnos/";
+
+  tipoopcion = "consultaxusuario";
+  archivodeconsulta = 'consultaalumnos.php';
+  let datosconsulta = {tipo : tipoopcion,idalumno  :'',usuario: usuarioactual}
+  fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+  .then(response =>{
+    if(response.statusText == 'OK')
+    {}
+    return response.json();
+  })
+  .then(data=>{
+    cantidad = data.length;
+    if(cantidad > 0)
+    {
+      
+        document.getElementById("fotoalumno").src = rutaimagenalumno + data[0].foto; 
+
+      document.getElementById("fotocertificadoalumno").src = rutaimagenalumno + data[0].certificado; 
+
+      if(data[0] != "desconocido")
+      {
+        idalumno =data[0].idalumno;
+        ldidalumno.value = idalumno;
+        ldnombre.value = data[0].nombre;
+        ldapellido.value = data[0].apellido;
+        lddni.value = data[0].dni;
+        ldwhatsapp.value = data[0].whatsapp;
+        ldfechanacimiento.value = data[0].fechanacimiento;
+        ldemail.value = data[0].email;
+        ldusuario.value = data[0].usuario;
+        estadoactualalumno=data[0].estado;
+        if(data[0].foto != '')
+          document.getElementById("fotoalumno").src = rutaimagenalumno + data[0].foto; 
+        
+        if(data[0].certificado != '')
+          document.getElementById("fotocertificadoalumno").src = rutaimagenalumno + data[0].certificado; 
+          
+        ldestado.style.color = "white";
+        if(data[0].estado==0)
+        {
+          ldestado.style.backgroundColor = "red";
+          estadoactual = 'Inactivo';
+        }else{
+          ldestado.style.backgroundColor = "green";
+          estadoactual = 'Activo';
+        }
+        ldestado.value = estadoactual;
+        fotoactual = data[0].foto;
+        certificadoactual =data[0].certificado;
+
+        TraeDatosInteres();//trae los turnos en los cuales se incribio el alumno
+      }
+    }
+  })
+  .catch(function (error){
+    console.log(error);
+  });
+ }
+
+
+ function Refrescar()
+ {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  TraeDatosInteres();
+ }
+
+ async function TraeDatosInteres(){
+
+
+  document.getElementById("espera").style.visibility = "visible";
+
+   arreglointeres = [];
+
+   tipoopcion = "consultafechaenadelante";
+   archivodeconsulta = 'consultainteres.php';
+   let datosconsulta = {tipo : tipoopcion,idalumno  :idalumno,fecha:ldfechaturno.value}
+
+   fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+   .then(response =>{
+     if(response.statusText == 'OK')
+     {}
+     return response.json();
+   })
+   .then(data=>{
+      cantidad = data.length;
+
+      if(cantidad > 0){
+
+        for(a=0;a<data.length;a++){
+          //crea el arreglo con los turnos en los que se incribio
+        objinteres = new Object();
+        objinteres.idreserva      = data[a].idreserva;
+        objinteres.idturno        = data[a].idturno;
+        objinteres.idactividad    = data[a].idactividad;
+        objinteres.fechainscribio = data[a].fechainscribio;
+        objinteres.fechaactividad = data[a].fechaactividad;
+        objinteres.horainicio     = data[a].horainicio;
+        objinteres.idalumno       = data[a].idalumno;
+        objinteres.asistio        = data[a].asistio;
+
+        arreglointeres.push(objinteres);
+        }
+      }
+      PreCargaTurnos();
+
+    })
+    .catch(function (error){
+      console.log(error);
+    });
+
+}
+
+function GuardarInteres(interes,valor){
+
+    document.getElementById("espera").style.visibility = "visible";
+    fetch("./controladores/guardarinteres.php?n="+ version,{method:'POST',body: JSON.stringify( interes ),headers:{'Content-Type':'application/json'}})
+    .then(response =>{
+      if(response.statusText == 'OK')
+      {
+
+      }
+      return response.json();
+    })
+    .then(data=>{
+
+      if(data>=1)
+      {
+        // TraeDatosInteres();
+        document.getElementById("espera").style.visibility = "hidden";
+        document.getElementById("Reserva"+valor).disabled = false;
+
+      }
+    })
+    .catch(function (error){
+          console.log(error);
+    });
+  }
+
+  function EliminarInteres(interes,valor){
+      document.getElementById("espera").style.visibility = "visible";
+
+      tipoopcion = "consultaxidalumnoyturno";
+      archivodeconsulta = 'consultareservas.php';
+
+      let datosconsulta = {tipo : tipoopcion,idalumno  : idalumno,fechadesde:'',fechahasta:'',idturno:interes.idturno}
+      fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+      .then(response => response.json())
+      .then(data =>
+      {
+          let cantidad =  data.length;
+          //  let cantidad = Object.keys(data).length;
+          if(data[0] != 'desconocido')
+          {
+            if(data[0].asistio==0)
+            {
+            // ----------------------------------------------------
+            datosconsulta = {idalumno:interes.idalumno,idactividad:interes.idactividad,idturno:interes.idturno}
+
+            fetch("./controladores/eliminarinteres.php?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+            .then(response =>{
+              if(response.statusText == 'OK'){}
+                return response.json();
+              })
+              .then(data=>
+              {
+                if(data>=1)
+                {
+                  if(llamomisturnos==true)
+                    MisTurnos();
+
+                  document.getElementById("espera").style.visibility = "hidden";
+                  document.getElementById("Reserva"+valor).disabled = false;
+                }
+              })
+              .catch(function (error){
+                  console.log(error);
+              });
+            // --------------------------------------------------
+            }
+            else{
+              if(llamomisturnos==true)
+                MisTurnos();
+              else
+                TraeDatosInteres();
+            }
+          }
+      })
+      .catch(function(error){
+        console.log(error);
+        return false;
+      });
+
+
+      
+        
+      
+
+      
+  }
+
+  function VerificaSiAsistio(idturnopasado){
+    //Verifica si esta presente antes de eliminiar su turno
+      tipoopcion = "consultaxidalumnoyturno";
+      archivodeconsulta = 'consultareservas.php';
+      let datosconsulta = {tipo : tipoopcion,idalumno  : idalumno,fechadesde:'',fechahasta:'',idturno:idturnopasado}
+      fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+      .then(response => response.json())
+      .then(data =>
+      {
+          let cantidad =  data.length;
+          //  let cantidad = Object.keys(data).length;
+          if(data[0] != 'desconocido')
+          {
+              return data[0].asistio;
+          }
+      })
+      .catch(function(error){
+        console.log(error);
+        return false;
+      });
+  }
+
+  function configuratabla() {
+
+
+    $('#tabla').DataTable({
+      scrollX: true,
+      responsive: true,
+      'pageLength': 100,
+      "columnDefs": [
+      { "width": "40%", "targets": 0 },{ "width": "10%", "targets": 1 },{ "width": "10%", "targets": 2 },
+      { "width": "10%", "targets":3 },{ "width": "10%", "targets": 4 },{ "width": "10%", "targets": 5 },
+      {"className": "dt-center", "targets": "_all"}
+      ],
+      "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+      },
+      dom: '<"top"Bftp>',
+      buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+            //     {
+            //       extend: 'excel',
+                    
+            //       text: '<button class="btn btn-success botontotal">Excel <i class="fas fa-file-excel"></i></button>'
+            //   },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+            //   {
+            //   extend: 'copy',
+            //   text: '<button class="btn btn-success botontotal">COPIAR<i class="fas fa-file-excel"></i></button>'
+
+            //   },
+        ],
+    });
+
+  ldregistrotabla.style.display = "none";
+
+  }
+
+  //---------------------------------------------------- Opciones de Menu ----------------------------------
+
+  function GuardarClave(){
+    nuevaclave = document.getElementById("password").value;
+    if(nuevaclave){
+      CambioDeClave(nuevaclave);
+    }
+
+  }
+function CambioDeClave(nuevaclave){
+
+    archivodeconsulta = "abmalumnospas.php"
+    datosconsulta={tipo:"modificar",usuario:usuarioactual,usuarioanterior:'',clave:nuevaclave}
+    fetch("./controladores/"+archivodeconsulta,{method:"POST",body:JSON.stringify(datosconsulta),headers:{"Content-Type":"application/json"}})
+    .then(response=>{
+        if(response.status == "Ok"){}
+        return response.json();
+    })
+    .then(data=>{
+        if(data>0)
+        {
+            Swal.fire({
+            title: 'Excelente"',
+            text: "La clave se cambió correctamente",
+            icon: 'success',
+            })
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+function ValidarEscritura(){
+
+      if(ldclave.value == '' || ldclave1.value == ''){
+        document.getElementById("btnguardarclave").disabled = true;
+      }
+      else{
+          ValidarClaves();
+      }
+  }
+
+
+function ValidarClaves(){
+
+    ldrevisorclaves= document.getElementById("revisorclaves");
+    ldrevisorclaves.style.color = "red";
+    ldrevisorclaves.innerHTML ='';
+
+    if(ldclave.value.toString().trim().length < 4 || ldclave1.value.trim().length > 8)
+    {
+        ldrevisorclaves.innerHTML = "Las claves deben tener entre 4 y 8 dígitos";
+        document.getElementById("btnguardarclave").disabled = true;
+    }
+    else if(ldclave.value.toString().trim() != ldclave1.value.toString().trim())
+    {
+        ldrevisorclaves.innerHTML = "Las claves deben ser iguales";
+        document.getElementById("btnguardarclave").disabled = true;
+    }else{
+      document.getElementById("btnguardarclave").disabled = false;
+    }
+}
+
+function mostrarPassword(objeto) {
+        var cambio = document.getElementById(objeto);
+        if (cambio.type == "password") {
+            cambio.type = "text";
+            $('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+        } else {
+            cambio.type = "password";
+            $('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+        }
+    }
+    $("#verclave").click(function () {mostrarPassword("password");});
+
+    $("#verclave1").click(function () {mostrarPassword("password1");});
+  //-------------------------------------------------------------------------------------
+
+  function DeseaSalir(){
+    Swal.fire({
+      title: 'Salir del sistema',
+      text: "Desea salir?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Salir();
+        }
+      })
+
+}
+
+  function Salir(){
+    if (window.history.replaceState) { // verificamos disponibilidad
+      window.history.replaceState(null, null, window.location.href);
+    }
+    location.reload(true);
+  }
+
+  function MisTurnos(){
+    llamomisturnos=true;
+    arreglointeres    = [];
+
+
+      tipoopcion = "consultaxidalumno";
+      archivodeconsulta = 'consultareservas.php';
+      let datosconsulta = {tipo : tipoopcion,idalumno  : idalumno,fechadesde:'',fechahasta:'',idturno:0}
+      fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})
+      .then(response => response.json())
+      .then(data =>
+      {
+          let cantidad =  data.length;
+          //  let cantidad = Object.keys(data).length;
+          if(data[0] != 'desconocido')
+          {
+            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+            {
+                objinteres = new Object();
+                objinteres.idreserva      = data[a].idreserva;
+                objinteres.idturno        = data[a].idturno;
+                objinteres.idactividad    = data[a].idactividad;
+                objinteres.actividad      = data[a].actividad;
+                objinteres.fechainscribio = data[a].fechainscribio;
+                objinteres.fechaactividad = data[a].fechaactividad;
+                objinteres.horainicio     = data[a].horainicio;
+                objinteres.idalumno       = idalumno;
+                objinteres.duracion       = data[a].duracion;
+                objinteres.asistio        = data[a].asistio;
+
+                arreglointeres.push(objinteres);
+
+            }
+          }
+          VerMisTurnos(arreglointeres);
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+  }
+
+  function CargarComponenteDMY(){
+    $("#componentediamesanio").load('cicloFecha/componentedmy.html?n='+version);
+  }
+
+  function Subirimagenes(){
+    $("#divimagenes").load("guardarimagenes.html?n="+version);
+}
+
+  $("#divbotonflotante").load("botonflotante.html?n="+version);
+
+  $(document).ready(function(){
+
+    ReconoceCampos();
+    Iniciar();
+
+  });
+
+  document.getElementById("usuario").addEventListener("input",function(){
+    ConsultaUsuario();
+})
+  </script>

@@ -1,0 +1,47 @@
+<style>
+    #anioselect{
+        background-color: green;
+        color: white;
+    }
+</style>
+<select id="anioselect" class="form-select form-select-sm"  onchange="SeleccionaAnio()" aria-label=".form-select-sm example">
+    <option selected>Año</option>
+</select>
+<script>
+var selectanio;
+function ReconoceCampos(){
+    selectanio=document.getElementById("anioselect");
+}
+
+function SeleccionaAnio(){
+
+    anioseleccionado=selectanio.options[selectanio.selectedIndex];
+    aniocomponent= anioseleccionado.text;
+
+    if(anioseleccionado.text!="Año")
+    {
+        var bisiesto = new Date(aniocomponent, 1, 29).getMonth() == 1;
+        bisiesto ? (diasdefebrero = 29) : (diasdefebrero = 28);
+        $("#divmes").load('./cicloFecha/mes.html?n='+version);
+    }
+
+    document.getElementById("siguiente").disabled = true;
+
+}
+
+function LlenaAnios(){
+    anioactual=new Date();
+    if(selectanio){
+        for(a=anioactual.getFullYear()-90;a<=anioactual.getFullYear()-5;a++){
+            opcion = document.createElement('option');
+            opcion.value = a;
+            opcion.text= a;
+            selectanio.appendChild(opcion); 
+        }
+    }
+}
+
+$(document).ready(function(){
+    ReconoceCampos();
+    LlenaAnios();
+});

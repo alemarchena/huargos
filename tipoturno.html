@@ -1,0 +1,98 @@
+<style>
+
+</style>
+
+<div id="divarriba" class="row pb-3">
+    <div class="col-sm-2" style="text-align: center;">
+        <img class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px" >   
+    </div>
+    <div class="col-sm-8">
+        <div class="row" style="text-align: center;">
+            <h4>Parámetros Únicos</h4>
+        </div>
+        <div class="row" style="text-align: center;">
+            <div class="tooltipbutton1">
+                <button id="volver" type="button" class="btn btnmenu" onclick="Volver()"><span class="material-icons md-light md-48">undo</span> </a>
+                    <span class="tooltiptext1">Regresar al menú</span>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-10 col-md-2 offset-md-5">
+        <div class="form-check">
+            <label class="form-check-label" for="turnosfijos">Usar Turnos fijos</label>
+            <input type="checkbox" checked class="form-check-input" id="turnosfijos" >
+        </div>
+    </div>
+</div>
+
+</div>
+ 
+<script>
+
+var ldvturnosfijos;
+
+document.getElementById('turnosfijos').addEventListener('click',(()=>{
+    Guardar();
+}))
+
+function Guardar()
+{
+    tipoturno=document.getElementById("turnosfijos");
+    
+    archivodeconsulta = 'setturno.php';
+    tipo = 0;
+    if(tipoturno.checked)
+        tipo = 1
+
+    quehace='guarda';
+    let datosconsulta = {tipo:tipo,quehace:quehace}
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{if(response.statusText == 'OK'){}return response.text();
+    }).then(data => {
+        if(data == 1){
+           mensaje("Guardado","Se guardó correctamente","success","Ok");
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+function ConsultaTipoTurno()
+{
+    tipoturno=document.getElementById("turnosfijos");
+    archivodeconsulta = 'setturno.php';
+    quehace='consulta';
+
+    let datosconsulta = {tipo  : 0,quehace:quehace}
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{
+        if(response.statusText == 'OK'){}
+        return response.text();
+    }).then(data => {
+        if(data==0){
+            tipoturno.checked = false;
+        }else if(data==1){
+            tipoturno.checked = true;
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+function Volver(){
+    agrego=false;
+    $("#bloqueprincipal").load("panelmenu.html?n="+version);
+}
+
+$(document).ready(function(){
+    ConsultaTipoTurno();
+});
+
+
+
+</script>

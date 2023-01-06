@@ -1,0 +1,242 @@
+<style>
+    .botones{
+        visibility:hidden;
+    }
+    .margenboton{
+        margin: 0em 0.5em 0em 0.5em;
+        color: rgb(51, 51, 51);
+    }
+
+@media (min-width: 20px) and (max-width:640px) {
+
+    .margenboton{
+        margin: 0;
+        padding: 0.5em;
+        color: rgb(51, 51, 51);
+    }
+}
+</style>
+
+<script>
+
+ruta = '';
+
+CargarLibreriasFirebase();
+
+function CargarLibreriasFirebase(){
+    loadScript('https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js', function () {
+        CargarLibreriasFirebase1();
+
+    })
+}
+
+function CargarLibreriasFirebase1(){
+
+    loadScript('https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js', function () {
+        CargarLibreriasFirebase2();
+
+    })
+}
+function CargarLibreriasFirebase2(){
+
+    loadScript('https://www.gstatic.com/firebasejs/6.2.0/firebase-firestore.js', function () 
+    {
+        //Autenticacion a la base de usuarios de Firebase de Anuncio Latino Houston
+        const firebaseConfig = {
+            apiKey: "AIzaSyAwy17hths5YGknlot758vbfJmdvUYxlhM",
+            authDomain: "templay-studios.firebaseapp.com",
+            databaseURL: "https://templay-studios.firebaseio.com",
+            projectId: "templay-studios",
+            storageBucket: "templay-studios.appspot.com",
+            messagingSenderId: "794779272524",
+            appId: "1:794779272524:web:81a2242dc1484162223be9",
+            measurementId: "G-CYXV1DX5QB"
+        };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+
+            initApp();
+
+    })
+}
+
+    function loguearseafi()
+    {
+        $("#bloqueprincipal").load("loginafi.html?t="+version);
+    }
+    
+    function registroafi()
+    {
+        $("#bloqueprincipal").load("registroafi.html?t="+version);
+    }
+
+
+   
+
+    /*INICIO DE AUTENTICACION*/
+    function initApp() {
+        // Listening for auth state changes.
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) 
+            {
+                // User is signed in.
+                var displayName = user.displayName;
+                email = user.email;
+                emg=user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                usuariologueado =true;
+
+                if (!emailVerified) //esta logueado pero no verificado
+                {
+
+                    
+                    Swal.fire({
+                        title: 'Atención!',
+                        text: 'Le hemos enviado un link a su correo, por favor ingrese y verifique la cuenta : ' + user.email,
+                        icon: 'info',
+                        confirmButtonText: 'Ok'
+                    });
+                    cargarloginregistro(1,'');
+
+                    habilitacionLoginRegistro(true);
+                  
+                    sendEmailVerification();
+
+                } else { //esta logueado y verificado
+
+                    usuariologueado =true;
+                    asignaDatosLogueado(user.email);
+                    emg=user.email;
+
+                    setTimeout(() => {
+                        cargarloginregistro(0,emg);
+                    }, 300);
+
+                }
+            } else
+            {
+                asignaDatosLogueado("");
+                usuariologueado =false;
+                emg='';
+                setTimeout(() => {
+                    cargarloginregistro(1,emg);
+                }, 300);
+
+            }
+        });
+    }
+
+   
+    function cargarloginregistro(opcion,emgpasado){
+        
+        if(opcion==1)
+        {
+            $("#ulbarra").load("botonesloginregistroafi.html?t="+version);
+            $("#bloqueprincipal").load("bienvenidos.html?t="+version);
+            return false;
+        }
+       else{
+
+        archivodeconsulta='ingreso.php';
+        let datosconsulta = {tipo:"consulta",emg:emgpasado,administrador:''}
+        fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body:JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+        .then(response => response.json())
+        .then(data => 
+        {
+            let cantidad =  data.length;
+            if(cantidad>0)
+            {
+                if(data[0] != "desconocido")
+                {
+                    $("#ulbarra").load("botonescerrarsesionafi.html?t="+version);
+                    $("#bloqueprincipal").load("panelmenu.html?t="+version);
+                }else{
+                    $("#ulbarra").load("botonesloginregistroafi.html?t="+version);
+                    $("#bloqueprincipal").load("bienvenidos.html?t="+version);
+                    mensaje("Autorización","No se encuentra autorizado para utilizar el panel","info","Ok");
+                }
+            }else{
+                $("#ulbarra").load("botonesloginregistroafi.html?t="+version);
+                $("#bloqueprincipal").load("bienvenidos.html?t="+version);
+                mensaje("Autorización","No se encuentra autorizado para utilizar el panel","info","Ok");
+            }
+        })
+        .catch(function(error){console.log(error);});
+
+       }
+
+    }
+
+    function asignaDatosLogueado(emaillogueado){
+        let objetousuario = document.getElementById("usuariologueado"); 
+        if(objetousuario!=undefined)
+        {
+            objetousuario.innerHTML= emaillogueado;
+        }
+    }
+
+    function habilitacionLoginRegistro(bandera){
+        vista="";
+        if(bandera==true)
+        {
+            let bcs = document.getElementById('cerrarsesion');
+            if(bcs)
+            {
+                bcs.style.visibility = "hidden";
+                vista="hidden";
+            }
+            
+            let bhp = document.getElementById('homepagina');
+            if(bhp){
+                bhp.style.visibility = "hidden";
+                vista="visible";
+            }
+        }
+        else{
+            let bcs = document.getElementById('cerrarsesion');
+            if(bcs)
+            {
+                bcs.style.visibility = "visible";
+                vista="hidden";
+            }
+        }
+
+        document.getElementById('login').style.visibility = vista;
+        document.getElementById('registrarse').style.visibility = vista;
+    }
+
+
+    function cerrarSesion(){
+        firebase.auth().signOut();
+
+        
+        setTimeout(() => {
+            // habilitacionLoginRegistro(true);
+            email = undefined;
+            $("#bloqueprincipal").load("logueoregistroafi.html?t="+version);
+            
+        }, 300);
+    }
+
+    function sendEmailVerification() {
+        firebase.auth().currentUser.sendEmailVerification().then(function () {
+            
+        });
+        // document.getElementById('quickstart-verify-email').style.visibility = "hidden";
+        swal("Le enviamos un email", "Revise su correo");
+        Swal.fire({
+                title: 'Perfecto',
+                text: 'Hemos enviado un link de verificación a su email, por favor ingrese y confirme',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            });
+        firebase.auth().signOut();
+    }
+
+   
+</script>

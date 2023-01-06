@@ -1,0 +1,421 @@
+<style>
+th{
+    font-family: 'Barlow', sans-serif;
+    color: #534c07;
+}
+
+/* Tooltip container */
+.tooltipbutton {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  height: 60px;
+  line-height: 60px;
+  background-color: rgb(49, 49, 49);
+  color: #fff;
+  text-align: center;
+  padding: 0px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipbutton:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
+
+<div id="divarriba" class="row pb-3">
+    <div class="col-sm-2" style="text-align: center;">
+        <img class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px" >   
+    </div>
+    <div class="col-sm-8">
+        <div class="d-flex justify-content-center">
+            <h4>Actividades</h4>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: right;">
+        <div class="tooltipbutton">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#formulariomodal" data-whatever="@getbootstrap" onclick="Agregar()"><span class="material-icons md-light md-48">add_circle</span> </a>
+            <span class="tooltiptext">Agregar actividad</span>
+        </div>
+    </div>
+    <div class="col-sm-1" style="text-align: center;">
+        <div class="tooltipbutton">
+            <button id="volver" type="button" class="btn btnmenu" onclick="Volver()"><span class="material-icons md-light md-48">undo</span> </a>
+            <span class="tooltiptext">Regresar al menú</span>
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <table id="tabla" class="display table table-striped" style="width: 100%!important;">        
+            <thead><tr>
+                <th>id</th>
+                <th>Actividad</th>
+                <th>Propuesta</th><th>Duración</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr></thead>
+            <tbody><td></td><td></td><td></td><td></td><td></td><td></td></tbody>
+          </table>
+    </div>
+    
+</div>
+ <!-- ------------------------------------------------- Modal --------------------------------------------------- -->
+ 
+<div class="modal fade" id="formulariomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Actividades</h5>
+        <button type="button" class="close btn btnmenu" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="id" class="col-form-label">Id actividad:</label>
+                        <input type="text" class="form-control" id="id" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        <label for="actividad" class="col-form-label">Nombre actividad:</label>
+                        <input type="text" class="form-control" id="actividad">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="propuesta" class="col-form-label">Propuesta:</label>
+                <textarea class="form-control" id="propuesta"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <label for="duracion" class="col-form-label">Duración:</label>
+                        <input type="text" class="form-control" id="duracion" placeholder="Duración del turno ej: 1 hora y media">
+                    </div>
+                </div>
+            </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+        <button id="botoncerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ----------------------------------------------- Fin modal ------------------------------------------------- -->
+<script>
+
+arreglo = [];
+
+//Campos del formulario
+var ldid;
+var ldactividad;
+var ldpropuesta;
+var ldduracion;
+
+function ReconocerCampos(){
+    ldid = document.getElementById("id");
+    ldactividad = document.getElementById("actividad");
+    ldpropuesta = document.getElementById("propuesta");
+    ldduracion = document.getElementById("duracion");
+}
+
+function OcultarModal(){
+    document.getElementById("botoncerrar").click();
+}
+
+function Agregar(){
+
+    Limpiar();
+    $('#formulariomodal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
+}
+
+function Volver(){
+    $("#bloqueprincipal").load("panelmenu.html?n="+version);
+}
+
+function DeseaEliminar(idpasado){
+      Swal.fire({
+      title: 'Seguro desea eliminar?',
+      text: "Esto no podrá revertirse!",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            Eliminar(idpasado);
+        }
+      })
+}
+
+function Eliminar(idpasado){
+
+    archivodeconsulta = 'preborrado.php';
+    tipo    = "actividad"; tabla   = "huturnos";    idcampo = "idactividad";
+    let datosconsulta = {tipo : tipo,tabla  : tabla,idcampo : idcampo,valor:idpasado}
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{ if(response.statusText == 'OK'){}return response.json();})
+    .then(data=>{
+        cantidad = data.length;
+        if(cantidad >= 1)
+        {
+            if(data[0]!="desconocido"){
+                mensaje("Importante","La actividad es parte de turnos, no se puede eliminar!","info","Ok");
+            }
+        }else{
+            // -------------------------------------------------
+            archivodeconsulta = 'abmactividad.php';
+            tipo = "eliminar";
+            datosconsulta = {tipo : tipo,idactividad  : idpasado,actividad : "",propuesta:"",duracion:"",valorpesos:""}
+            fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+            .then(response =>{
+                if(response.statusText == 'OK'){}return response.json();
+            })
+            .then(data=>{
+                if(data == 1)
+                {
+                    Limpiar();
+                    Listar();
+                    mensaje("Eliminado","La actividad fué eliminada correctamente.","success","Ok");
+                    OcultarModal();
+                }
+            })
+            .catch(function (error){ console.log(error); });
+            // -------------------------------------------------
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+function ValidarCampos(){
+    estado= true;
+    if(ldactividad.value.trim() == ""){
+        mensaje("Faltan datos","Falta ingresar la actividad","info","Ok");
+        estado=false;
+    }
+    if(ldpropuesta.value.trim()=="" && estado==true){
+        mensaje("Faltan datos","Falta ingresar la propuesta","info","Ok");
+        estado=false;
+    }
+
+    if(ldduracion.value.trim()==""&& estado==true){
+        mensaje("Faltan datos","Falta ingresar la duración","info","Ok");
+        estado=false;
+    }
+
+    return estado;
+}
+
+function Guardar(){
+
+if(ValidarCampos())
+{
+    archivodeconsulta = 'abmactividad.php';
+    idactividad=ldid.value;
+
+    if(idactividad==""){
+        idactividad=0;
+        tipo = "guardar";
+    }else{
+        tipo = "modificar";
+    }
+
+    let datosconsulta = {tipo : tipo,idactividad  : idactividad,actividad : ldactividad.value,propuesta:ldpropuesta.value,duracion:ldduracion.value}
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response =>{
+        if(response.statusText == 'OK')
+        {
+        }
+        return response.json();
+    }).then(data => {
+        if(data == 1){
+            Limpiar();
+            Listar();
+            OcultarModal();
+        }
+    })
+    .catch(function (error){ console.log(error); });
+}
+
+}
+
+function Listar()
+{
+    arreglo= [];
+    archivodeconsulta = 'consultaactividades.php';
+    
+    id=ldid.value;
+    
+    if(id=="")
+        tipoconsulta = "consultatodo";
+    else
+        tipoconsulta = "consulta";
+
+    if(id=="")id=0;
+
+    let datosconsulta = {tipo : tipoconsulta,idactividad  : id,}
+
+    fetch("./controladores/" + archivodeconsulta +"?n="+ version,{method:'POST',body: JSON.stringify( datosconsulta ),headers:{'Content-Type':'application/json'}})   
+    .then(response => response.json())
+    .then(data => 
+    {
+        let cantidad =  data.length;
+        if(cantidad>0)
+        {
+            for(let a = 0 ;a<cantidad;a++) //llenar la lista
+            {
+                toPropuestas = new Object();
+                toPropuestas.idactividad = data[a].idactividad;
+                toPropuestas.actividad = data[a].actividad;
+                toPropuestas.propuesta = data[a].propuesta;
+                toPropuestas.duracion = data[a].duracion;
+                toPropuestas.imagen = data[a].imagen;
+                
+                arreglo.push(toPropuestas);
+            }
+        }
+        llenartabla();
+    })
+    .catch(function(error){console.log(error);});
+}
+
+function llenartabla()
+{
+    if ($.fn.dataTable.isDataTable('#tabla')) {
+        tabla = $('#tabla').DataTable();
+    }
+
+    tabla.clear().draw();
+    
+
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+        if(arreglo[a].imagen == "")
+            imagen = "";
+        else
+            imagen = "<picture><img src='" + rutaimagen + arreglo[a].imagen + "' class='img-fluid img-thumbnail zoom' alt='" + arreglo[a].actividad + "'></picture>";
+
+
+        tabla.row.add([
+            "<p>" + arreglo[a].idactividad + "</p>" ,  
+            arreglo[a].actividad,
+            arreglo[a].propuesta,
+            arreglo[a].duracion,
+            "<button id='Edi" + arreglo[a].idactividad + "'class='btn btn-success btn-sm' type='button' data-toggle='modal' data-target='#formulariomodal' data-whatever='@getbootstrap' onclick='Editar(\"" + arreglo[a].idactividad+"\")'><span class='material-symbols-outlined'>edit</span></button>",
+            "<button id='Eli" + arreglo[a].idactividad + "' class='btn btn-success btn-sm btnmenu' type='button' onclick='DeseaEliminar(\"" + arreglo[a].idactividad+"\")'><span class='material-symbols-outlined '>delete</span></button>",
+        ]).draw(false);
+    }
+}
+
+function Limpiar(){
+    
+    ldid.value = "";
+    ldactividad.value = "";
+    ldpropuesta.value = "";
+    ldduracion.value = "";
+}
+
+function Editar(idpasado){
+   
+    for(let a = 0 ;a<arreglo.length;a++)
+    {
+        if(arreglo[a].idactividad == idpasado){
+
+            ldid.value = arreglo[a].idactividad;
+            ldactividad.value = arreglo[a].actividad;
+            ldpropuesta.value = arreglo[a].propuesta;
+            ldduracion.value = arreglo[a].duracion;
+        }
+    }
+}
+
+async function Configuratabla() 
+{
+    $('#tabla').DataTable({
+        scrollX: true,
+        responsive: true,
+        'pageLength': 100,
+        "columnDefs": [
+        { "width": "10%", "targets": 0 },{ "width": "20%", "targets": 1 },
+        { "width": "40%", "targets": 2 },{ "width": "15%", "targets": 3 },
+        { "width": "5%", "targets": 4 },{ "width": "5%", "targets": 5 },
+        {"className": "dt-center", "targets": "_all"}
+        ],
+        "language": {
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "info": "Registro: _START_ de _END_ - Total: _TOTAL_",
+        "emptyTable": "No hay registros para ver",
+        "infoEmpty": "No hay registros  para ver",
+        "paginate": {
+            "first": "Primera",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "last": "Ultima"
+        },
+        "aria": {
+            "sortAscending": "Ordenar columna ascendente",
+            "sortDescending": "Ordenar columna descendente"
+        },
+        },
+        dom: '<"top"Bftp>',
+        buttons: [{
+                  extend: 'pdfHtml5',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  text: '<button class="btn btn-success botontotal">PDF <i class="fas fa-file-excel"></i></button>'
+                },
+            //     {
+            //       extend: 'excel',
+                    
+            //       text: '<button class="btn btn-success botontotal">Excel <i class="fas fa-file-excel"></i></button>'
+            //   },
+              {
+              extend: 'print',
+              text: '<button class="btn btn-success botontotal">Imprimir<i class="fas fa-file-excel"></i></button>'
+
+              },
+            //   {
+            //   extend: 'copy',
+            //   text: '<button class="btn btn-success botontotal">COPIAR<i class="fas fa-file-excel"></i></button>'
+
+            //   },
+        ],
+    });
+
+    await Listar();
+}
+
+$(document).ready(function(){
+    ReconocerCampos();
+    Configuratabla();
+});
+</script>

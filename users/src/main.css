@@ -1,0 +1,32 @@
+body
+{
+    background-color: rgb(214, 214, 214);
+    color: #202020;
+}
+
+
+.mensajero
+{
+    color: rgb(17, 82, 136);
+    font-size: 1.1em;
+}
+
+#espera{visibility: hidden;}
+
+#divCalendario{
+    display: block;
+}
+#divfecha{
+    display: none;
+    padding: 2em
+}
+
+@media (min-width: 1px) and (max-width:991px) {
+    #divCalendario{
+        display: none;
+    }
+    #divfecha{
+        display: block;
+        padding: 2em
+    }
+}

@@ -1,0 +1,125 @@
+<style>
+    .col{text-align: center;}
+    .btn-dark{color: rgb(32, 173, 255);}
+    .contenedorbotones{margin-top: 2em;}
+    .card-title{color: red;}
+    #espera{visibility: hidden;}
+    .botoneleccion{border: 2px!important;
+        border-color: orange!important;
+        border-style: solid!important;}
+    .botoneleccion:hover{border: 3px!important;
+        border-color: orange!important;
+        border-style: solid!important;}
+        /* Tooltip container */
+.tooltipbutton {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  height: 60px;
+  line-height: 60px;
+  background-color: rgb(49, 49, 49);
+  color: #fff;
+  text-align: center;
+  padding: 0px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipbutton:hover .tooltiptext {
+    visibility: visible;
+    
+}
+</style>
+<div id="divarriba" class="row pb-3">
+    <div class="col-sm-2" style="text-align: center;">
+        <img class="logo" src="./img/logoempresa.png" alt="" width="auto" height="100px" >   
+    </div>
+    <div class="col-sm-8">
+        <div class="d-flex justify-content-center">
+            <h4>Estadísticas</h4>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+            <h4>Seguimientos de Turnos</h4>
+        </div>
+    </div>
+    <div class="col-sm-2" style="text-align: center;">
+        <div class="tooltipbutton">
+            <button id="volver" type="button" class="btn btnmenu" onclick="Volver()"><span class="material-icons md-light md-48">undo</span> </a>
+            <span class="tooltiptext">Regresar al menú</span>
+        </button>
+    </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------- -->
+<div class=" container contenedorbotones">
+    <div id="espera" class="d-flex justify-content-center">
+        <div class="spinner-border text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col">
+            <div class="card text-center" >
+                <div class="card-body">
+                <!-- <h5 class="card-title">Alumnos</h5> -->
+                <button onclick="Xalumno()" class="btn btn-block btn-dark botoneleccion">Por alumno</button>
+                <br>
+                <p class="card-text">Turnos comprados y usados por alumno</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center" >
+                <div class="card-body">
+                <!-- <h5 class="card-title">Panel</h5> -->
+                <button onclick="Inasistencias()" class="btn btn-block btn-dark botoneleccion">Inasistencias</button>
+                <br>
+                <p class="card-text">Consulta por alumno,la cantidad mayor o igual de clases que no asistió</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center" >
+                <div class="card-body">
+                <!-- <h5 class="card-title">Panel</h5> -->
+                <button onclick="Deudores()" class="btn btn-block btn-dark botoneleccion">Clases Disponibles</button>
+                <br>
+                <p class="card-text">Consulta por alumno,la cantidad de clases disponibles o menos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------------------------------------------------------------------------------------------- -->
+
+
+<hr>
+<div id="contenedorestadisticas"></div> 
+
+<script>
+function Volver(){
+    $("#bloqueprincipal").load("panelmenu.html?n="+version);
+}
+
+function Xalumno(){
+    $("#contenedorestadisticas").load("estaxalumno.html?n="+version);
+}
+function Inasistencias(){
+    $("#contenedorestadisticas").load("estaxinasistencias.html?n="+version);
+}
+function Deudores(){
+    $("#contenedorestadisticas").load("estaxdeudores.html?n="+version);
+}
+
+</script>

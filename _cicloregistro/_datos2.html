@@ -1,0 +1,151 @@
+<style>
+
+/* 
+@media (min-width: 601px)  {
+    #componentediamesanio {
+        display: none!important;
+    }
+
+    #componentefecha {
+        display: block!important;
+    }
+}
+@media screen and (max-width: 900px) and (orientation: portrait){
+    #componentediamesanio {
+        display: block!important;
+    }
+
+    #componentefecha {
+        display: none!important;
+    }
+}
+
+@media only screen and (max-Height : 480px) {
+    #componentediamesanio {
+        display: block!important;
+    }
+
+    #componentefecha {
+        display: none!important;
+    }
+} */
+</style>
+<!-- <div  class="d-flex justify-content-center"><p>Fecha de nacimiento</p></div>
+
+<div id="componentediamesanio"  class="d-flex justify-content-center"></div> -->
+
+<!-- <div id="componentefecha" class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="text-align: center;">
+        <input type="date" id="fechanacimiento" name="fechanacimiento" onkeyup="ValidarEscritura()">
+    </div>
+</div> -->
+
+<div class="d-flex justify-content-center">
+    <h4>Tu email y Nº de celular</h4>
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="text-align: center;">
+        <label for="email" class="col-form-label">email</label>
+        <input type="text" class="form-control" id="email" placeholder="Ej : alexperez@gmail.com" onkeyup="ValidarEscritura()">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-10 col-md-4 offset-md-4" style="text-align: center;">
+        <label for="whatsapp" class="col-form-label">Whatsapp</label>
+        <input type="text" class="form-control" id="whatsapp" placeholder="Ej : 549261XXXXXX sin el +" onkeyup="ValidarEscritura()">
+    </div>
+</div>
+<div class="d-flex justify-content-center" style="padding: 1em;">
+    <button id="anterior" onclick="Datos1(0)" class="btn btn-primary" style="margin: 0.5em;">Anterior</button>
+    <button id="siguiente" onclick="Datos1(1)" disabled class="btn btn-primary" style="margin: 0.5em;" >Siguiente</button>
+</div>
+<script>
+
+// var ldfechanacimiento;
+var ldemail;
+var ldwhatsapp;
+var ldsiguiente;
+
+function Datos1(opcion){
+    GuardarDatosTemporales();
+
+    if(opcion==0)
+        $("#bloqueregistro").load("./cicloregistro/datos1.html?n="+version);
+    else if(opcion==1)
+    {
+        if(ValidarInfo()){
+            $ ("#bloqueregistro").load("./cicloregistro/datos3.html?n="+version);
+        }
+    }
+    event.preventDefault();
+    event.stopPropagation();
+}
+function GuardarDatosTemporales(){
+    // fechanacimiento = ldfechanacimiento.value;
+
+    ldwhatsapp.value.trim().replace('+', '');
+    ldwhatsapp.value.trim().replace('-', '');
+    ldwhatsapp.value.trim().replace('(', '');
+    ldwhatsapp.value.trim().replace(')', '');
+    whatsapp = ldwhatsapp.value;
+    email = ldemail.value;
+}
+
+function CargarDatos(){
+    
+
+    // if(fechanacimiento!= undefined)
+    //     ldfechanacimiento.value = fechanacimiento;
+    if(email!= undefined)
+        ldemail.value = email;
+
+    if(whatsapp!= undefined)
+        ldwhatsapp.value = whatsapp;
+
+    // ldfechanacimiento.focus();
+    ValidarEscritura();
+}
+
+
+
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+            Datos1(1);
+    }
+});
+
+function ReconoceCampos(){
+    // ldfechanacimiento = document.getElementById("fechanacimiento");
+    ldemail = document.getElementById("email");
+    ldwhatsapp = document.getElementById("whatsapp");
+    ldsiguiente = document.getElementById("siguiente");
+}
+
+function ValidarInfo(){
+    
+    // if( ldfechanacimiento.value ==''  || ldwhatsapp.value == '')
+    if( ldemail.value ==''  || ldwhatsapp.value == '')
+        return false;
+    else
+        return true;
+}
+
+function ValidarEscritura(){
+    // if(ldfechanacimiento.value == ''  || ldwhatsapp.value == ''){
+    if(ldemail.value == ''  || ldwhatsapp.value == ''){
+        ldsiguiente.disabled = true;
+    }
+    else{
+        ldsiguiente.disabled = false;
+    }
+    
+}
+// function CargarComponenteDMY(){
+//     $("#componentediamesanio").load('cicloFecha/componentedmy.html?n='+version);
+// }
+
+ReconoceCampos();
+CargarDatos();
+// CargarComponenteDMY();
+</script>

@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <p id="prueba">Prueba</p>
+</body>
+</html>
+
+<script>
+    const prueba = document.getElementById('prueba');
+    prueba.innerHTML = getRandomString(7);
+
+
+function getRandomString(largo)
+{
+    let texto = '';
+    let posible = 'ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for(let a=0;a < largo;a++)
+    {
+        texto += posible.charAt(Math.floor(Math.random() * posible.length));
+    }
+    return texto;
+}
+</script>

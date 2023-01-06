@@ -1,0 +1,83 @@
+<style>
+    .col{
+        text-align: center;
+    }
+    .btn-dark{
+        color: rgb(32, 173, 255);
+        
+    }
+    .contenedorbotones
+    {
+        margin-top: 2em;
+    }
+
+    .card-title{
+        color: red;
+    }
+    #espera{
+        visibility: hidden;
+    }
+    button{
+        border: 2px!important;
+        border-color: orange!important;
+        border-style: solid!important;
+    }
+    button:hover{
+        border: 3px!important;
+        border-color: orange!important;
+        border-style: solid!important;
+    }
+</style>
+<div class=" container contenedorbotones">
+    <div id="espera" class="d-flex justify-content-center">
+        <div class="spinner-border text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col">
+            <div class="card text-center" >
+                <div class="card-body">
+                <!-- <h5 class="card-title">Alumnos</h5> -->
+                <button onclick="IrAlumnos()" class="btn btn-lg btn-block btn-dark">Alumnos</button>
+                <br>
+                <p class="card-text">Registro, ingreso y reserva de clases</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center" >
+                <div class="card-body">
+                <!-- <h5 class="card-title">Panel</h5> -->
+                <button onclick="IrPanel()" class="btn btn-lg btn-block btn-dark">Panel de Control</button>
+                <br>
+
+                <p class="card-text">Administrar plataforma</p>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col">
+            <div class="card text-center">
+                <div class="card-body">
+                <button onclick="IrAsistencia()" class="btn btn-lg btn-block btn-dark">Asistencia</button>
+                <br>
+
+                <p class="card-text">Marcar ingreso de alumnos</p>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+<hr>
+<br>    
+<script>
+    function IrAlumnos(){
+        location.assign("https://www.huargoskickboxing.com/users/src/index.html?a=54");
+    }
+    function IrPanel(){
+        window.location.assign("panel.html?n="+version);
+    }
+    function IrAsistencia(){
+        window.location.assign("asistenciaalumnos.html?n="+version);
+    }
+</script>
