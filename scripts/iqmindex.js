@@ -50,6 +50,6 @@ function CargarPanel(){
         console.log('Not Cookies');
     }
 
-    $("#bloqueprincipal").load("./botonesacceso.html?n=105");
-    $("#footer").load("footer.html?n="+version);
+    $("#bloqueprincipal").load("./botonesacceso.html?a=106");
+    $("#footer").load("footer.html?a="+version);
 }

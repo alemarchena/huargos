@@ -1,5 +1,5 @@
-import {ShowMessage} from './showmessage.js?a=54'
-import {ConvierteaDMA} from './clases.js?a=54'
+import {ShowMessage} from './showmessage.js?a=56'
+import {ConvierteaDMA} from './clases.js?a=56'
 
 export let diaslimite=30;
 

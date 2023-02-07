@@ -1,6 +1,8 @@
-import {ShowMessage} from './showmessage.js'
-import {tipoTurno} from './accesobdd.js'
-import {diaslimite} from './clasespendientes.js?a=54'
+import {ShowMessage} from './showmessage.js?a=56'
+import {tipoTurno} from './accesobdd.js?a=56'
+import {diaslimite} from './clasespendientes.js?a=56'
+
+const diasbuchones = 10;
 
 let fechaTurnos = document.getElementById('fechaturnos');
 const idalumno  = document.getElementById('idalumno');
@@ -141,8 +143,8 @@ export function PreCargaTurnos(orden)
                     ProximoVencimiento =  SumarDiasAfecha(fechaultimaventa,diaslimite,"dmy");
                 }
 
-                let mensajebuchon = 'Superó 3 clases impagas, por favor regularice para ver los turnos';
-                if(Pendientes > 3)
+                let mensajebuchon = 'Superó ' + diasbuchones + ' clases impagas, por favor regularice para ver los turnos';
+                if(Pendientes > diasbuchones)
                 {
                     buchon.innerText = mensajebuchon;
                 }else{

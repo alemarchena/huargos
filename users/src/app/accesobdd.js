@@ -1,11 +1,11 @@
-import {datos,LlenarFormulario, Info} from './formulario.js?a=54'
-import {CerrarModal,MostarImagenLogin} from './modal.js?a=54'
-import {ShowMessage} from './showmessage.js?a=54'
-import {LoggMenu} from './logincheck.js?a=54'
-import {DesActivarSistema, ActivarSistema,LoadURL} from './cargarsistema.js?a=54'
-import {ConvierteaDMA} from './clases.js?a=54'
-import {Limpia} from './turnos.js?a=54'
-import {ConsultaDiasLimite,diaslimite} from './clasespendientes.js?a=54'
+import {datos,LlenarFormulario, Info} from './formulario.js?a=56'
+import {CerrarModal,MostarImagenLogin} from './modal.js?a=56'
+import {ShowMessage} from './showmessage.js?a=56'
+import {LoggMenu} from './logincheck.js?a=56'
+import {DesActivarSistema, ActivarSistema,LoadURL} from './cargarsistema.js?a=56'
+import {ConvierteaDMA} from './clases.js?a=56'
+import {Limpia} from './turnos.js?a=56'
+import {ConsultaDiasLimite,diaslimite} from './clasespendientes.js?a=56'
 
 let imagenlogueado  = document.querySelector("#imagenlogueado");
 
